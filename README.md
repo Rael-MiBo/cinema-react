@@ -1,2 +1,6 @@
 # cinema-react
-Um sistema de cinema usando react
+## RODE ESTE COMANDO NA PASTA DO PROJETO
+  --npm install @vitejs/plugin-react --save-dev
+
+## AGORA RODE:
+  --npm run dev
