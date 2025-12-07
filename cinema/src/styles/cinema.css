@@ -1,0 +1,60 @@
+body {
+  background-color: #000;
+  color: #fff;
+  margin: 0;
+  font-family: "Arial", sans-serif;
+}
+
+h2, h4, h5, p, label {
+  color: #fff;
+}
+
+.card {
+  background-color: #181818;
+  border: 1px solid #333;
+  color: #fff;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.btn-primary {
+  background-color: #e50914;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #b00710;
+}
+
+.btn-secondary {
+  background-color: #333;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #444;
+}
+
+.btn-danger {
+  background-color: #b00710;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #90060d;
+}
+
+input, select {
+  background-color: #222;
+  border: 1px solid #444;
+  color: white;
+}
+
+input:focus, select:focus {
+  background-color: #1b1b1b;
+  border-color: #e50914;
+  color: white;
+}

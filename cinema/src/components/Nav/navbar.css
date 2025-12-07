@@ -1,0 +1,32 @@
+.nav-netflix {
+  background-color: #141414;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-netflix .nav-logo {
+  color: #e50914;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.nav-netflix .nav-links a {
+  margin-left: 24px;
+  color: #ffffffb3;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.nav-netflix .nav-links a:hover {
+  color: white;
+}
+
+.nav-netflix .nav-links .active {
+  color: white;
+  border-bottom: 2px solid #e50914;
+  padding-bottom: 4px;
+}
