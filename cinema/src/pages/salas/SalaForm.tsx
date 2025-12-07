@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Sala } from "../../types";
+import { useEffect, useState } from "react";
+import type { Sala } from "../../types";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { salaSchema } from "../../schemas/salaSchema";

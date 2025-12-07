@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as sessoesService from "../../services/sessoes";
 import * as filmesService from "../../services/filmes";
 import * as salasService from "../../services/salas";
@@ -6,7 +6,7 @@ import * as salasService from "../../services/salas";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 
-import { Sessao, Filme, Sala } from "../../types";
+import type { Sessao, Filme, Sala } from "../../types";
 import { useNavigate } from "react-router-dom";
 
 export default function SessoesList() {

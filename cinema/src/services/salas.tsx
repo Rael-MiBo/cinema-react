@@ -1,5 +1,5 @@
 import * as api from "./api";
-import { Sala } from "../types";
+import type { Sala } from "../types";
 
 const PATH = "salas";
 

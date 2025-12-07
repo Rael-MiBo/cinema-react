@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as filmesService from "../../services/filmes";
-import { Filme } from "../../types";
+import type { Filme } from "../../types";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";

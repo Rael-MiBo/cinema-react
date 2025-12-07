@@ -1,5 +1,5 @@
 import * as api from "./api";
-import { Sessao } from "../types";
+import type { Sessao } from "../types";
 
 const PATH = "sessoes";
 

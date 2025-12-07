@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as salasService from "../../services/salas";
-import { Sala } from "../../types";
+import type { Sala } from "../../types";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";

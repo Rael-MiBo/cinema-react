@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Filme } from "../../types";
+import { useEffect, useState } from "react";
+import type { Filme } from "../../types";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { filmeSchema } from "../../schemas/filmeSchema";

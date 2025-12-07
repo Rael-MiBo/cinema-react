@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Input from "../../components/Input";
 import Select from "../../components/Select";
@@ -9,7 +9,7 @@ import * as filmesService from "../../services/filmes";
 import * as salasService from "../../services/salas";
 
 import { sessaoSchema } from "../../schemas/sessaoSchema";
-import { Sessao, Filme, Sala } from "../../types";
+import type { Sessao, Filme, Sala } from "../../types";
 
 import { useNavigate, useParams } from "react-router-dom";
 

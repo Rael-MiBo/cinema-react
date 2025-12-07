@@ -1,5 +1,5 @@
 import * as api from "./api";
-import { Filme } from "../types";
+import type { Filme } from "../types";
 
 const PATH = "filmes";
 
