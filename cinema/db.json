@@ -1,0 +1,58 @@
+{
+  "filmes": [
+    {
+      "id": "1",
+      "titulo": "O Poderoso Chefão",
+      "sinopse": "A história épica de uma família da máfia italiana.",
+      "classificacao": "18",
+      "duracao": 175,
+      "genero": "Crime",
+      "dataInicialExibicao": "2024-01-01",
+      "dataFinalExibicao": "2024-12-31"
+    },
+    {
+      "id": "2",
+      "titulo": "Interestelar",
+      "sinopse": "Uma jornada épica além das estrelas para salvar a humanidade.",
+      "classificacao": "12",
+      "duracao": 169,
+      "genero": "Ficção Científica",
+      "dataInicialExibicao": "2024-03-01",
+      "dataFinalExibicao": "2024-12-31"
+    }
+  ],
+  "salas": [
+    {
+      "id": "1",
+      "numero": 1,
+      "capacidade": 120
+    },
+    {
+      "id": "2",
+      "numero": 2,
+      "capacidade": 80
+    }
+  ],
+  "sessoes": [
+    {
+      "id": "1",
+      "filmeId": 1,
+      "salaId": 1,
+      "horarioExibicao": "2025-01-15T20:00"
+    },
+    {
+      "id": "2",
+      "filmeId": 2,
+      "salaId": 2,
+      "horarioExibicao": "2025-01-15T21:30"
+    }
+  ],
+  "ingressos": [
+    {
+      "id": "8fbc",
+      "sessaoId": 1,
+      "tipo": "inteira",
+      "valor": 20
+    }
+  ]
+}
