@@ -1,30 +1,35 @@
-export type Filme = {
+// 🎬 Filme
+export interface Filme {
   id?: number;
   titulo: string;
   sinopse: string;
   classificacao: string;
-  duracao: number;
+  duracao: number; // minutos
   genero: string;
-  dataInicialExibicao?: string;
-  dataFinalExibicao?: string;
-};
+  elenco: string;
+  dataInicialExibicao: string; // YYYY-MM-DD
+  dataFinalExibicao: string;   // YYYY-MM-DD
+}
 
-export type Sala = {
+// 🏟 Sala
+export interface Sala {
   id?: number;
   numero: number;
   capacidade: number;
-};
+}
 
-export type Sessao = {
+// 🎞 Sessão
+export interface Sessao {
   id?: number;
-  filmeId: number;
-  salaId: number;
-  horarioExibicao: string; // ISO string
-};
+  filmeId: number;   // FK → Filme
+  salaId: number;    // FK → Sala
+  horarioExibicao: string; // format YYYY-MM-DDTHH:mm
+}
 
-export type Ingresso = {
+// 🎟 Ingresso
+export interface Ingresso {
   id?: number;
-  sessaoId: number;
+  sessaoId: number; 
   tipo: "inteira" | "meia";
   valor: number;
-};
+}

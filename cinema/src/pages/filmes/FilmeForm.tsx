@@ -10,13 +10,16 @@ export default function FilmeForm() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [data, setData] = useState<Filme>({
+const [data, setData] = useState<Filme>({
     titulo: "",
     sinopse: "",
     classificacao: "",
     duracao: 0,
     genero: "",
-  });
+    elenco: "", 
+    dataInicialExibicao: "",
+    dataFinalExibicao: ""
+});
 
   function update(field: keyof Filme, value: any) {
     setData((d) => ({ ...d, [field]: value }));
@@ -24,7 +27,7 @@ export default function FilmeForm() {
 
   async function carregar() {
     if (id) {
-      const filme = await filmesService.buscar(Number(id));
+      const filme = await filmesService.obter(Number(id));
       setData(filme);
     }
   }
@@ -64,11 +67,22 @@ export default function FilmeForm() {
           onChange={(e) => update("sinopse", e.target.value)}
         />
 
-        <Input
-          label="Classificação"
-          value={data.classificacao}
-          onChange={(e) => update("classificacao", e.target.value)}
-        />
+        <div>
+          <label className="form-label">Classificação</label>
+
+          <input
+            list="classificacoes"
+            className="form-control"
+            value={data.classificacao}
+            onChange={(e) => update("classificacao", e.target.value)}
+          />
+
+          <datalist id="classificacoes">
+            <option value="L" />
+            <option value="16" />
+            <option value="18+" />
+          </datalist>
+        </div>
 
         <Input
           type="number"

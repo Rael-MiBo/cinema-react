@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Input from "../../components/Input";
@@ -14,7 +14,7 @@ import * as ingressosService from "../../services/ingressos";
 import { ingressoSchema } from "../../schemas/ingressoSchema";
 
 export default function IngressoForm() {
-  const { id } = useParams(); // id = ID da sessão
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [sessao, setSessao] = useState<any>(null);
@@ -24,19 +24,17 @@ export default function IngressoForm() {
   const [tipo, setTipo] = useState<"inteira" | "meia">("inteira");
   const [valorBase, setValorBase] = useState<number>(20);
 
-  // Função de cálculo REAL (sempre número)
   function calcularValor(): number {
     return tipo === "meia" ? valorBase / 2 : valorBase;
   }
 
-  // Buscar dados relacionados
   useEffect(() => {
     (async () => {
       if (!id) return;
 
-      const sess = await sessoesService.buscar(Number(id));
-      const filme = await filmesService.buscar(sess.filmeId);
-      const sala = await salasService.buscar(sess.salaId);
+      const sess = await sessoesService.obter(Number(id));
+      const filme = await filmesService.obter(sess.filmeId);
+      const sala = await salasService.obter(sess.salaId);
 
       setSessao(sess);
       setFilme(filme);

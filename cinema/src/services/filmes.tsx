@@ -1,24 +1,32 @@
-import * as api from "./api";
-import type { Filme } from "../types";
+import { get, post, put, remove } from "./api";
+import type { Filme } from "../types/index";
+import type { Sessao } from "../types/index";
 
 const PATH = "filmes";
 
 export async function listar(): Promise<Filme[]> {
-  return api.get(PATH);
+  return await get(PATH);
 }
 
-export async function buscar(id: number): Promise<Filme> {
-  return api.get(`${PATH}/${id}`);
+export async function obter(id: number): Promise<Filme> {
+  return await get(`${PATH}/${id}`);
 }
 
-export async function criar(data: Filme): Promise<Filme> {
-  return api.post(PATH, data);
+export async function criar(body: Filme): Promise<Filme> {
+  return await post(PATH, body);
 }
 
-export async function atualizar(id: number, data: Filme): Promise<Filme> {
-  return api.put(`${PATH}/${id}`, data);
+export async function atualizar(id: number, body: Filme): Promise<Filme> {
+  return await put(`${PATH}/${id}`, body);
 }
 
-export async function remover(id: number): Promise<void> {
-  return api.remove(`${PATH}/${id}`);
+export async function removerFilme(id: number): Promise<void> {
+  await remove(`${PATH}/${id}`);
+
+  const sessoes: Sessao[] = await get("sessoes");
+  const relacionadas = sessoes.filter((s) => s.filmeId === id);
+
+  for (const s of relacionadas) {
+    await remove(`sessoes/${s.id}`);
+  }
 }

@@ -1,24 +1,28 @@
-import * as api from "./api";
-import type { Sessao } from "../types";
+import { get, post, put, remove } from "./api";
+import type { Sessao } from "../types/index";
 
 const PATH = "sessoes";
 
 export async function listar(): Promise<Sessao[]> {
-  return api.get(PATH);
+  return await get(PATH);
 }
 
-export async function buscar(id: number): Promise<Sessao> {
-  return api.get(`${PATH}/${id}`);
+export async function obter(id: number): Promise<Sessao> {
+  return await get(`${PATH}/${id}`);
 }
 
-export async function criar(data: Sessao): Promise<Sessao> {
-  return api.post(PATH, data);
+export async function criar(body: Sessao): Promise<Sessao> {
+  return await post(PATH, body);
 }
 
-export async function atualizar(id: number, data: Sessao): Promise<Sessao> {
-  return api.put(`${PATH}/${id}`, data);
+export async function atualizar(id: number, body: Sessao): Promise<Sessao> {
+  return await put(`${PATH}/${id}`, body);
 }
 
-export async function remover(id: number): Promise<void> {
-  return api.remove(`${PATH}/${id}`);
+export async function removerSessao(id: number): Promise<void> {
+  await remove(`${PATH}/${id}`);
 }
+export function buscar(arg0: number) {
+  throw new Error("Function not implemented.");
+}
+

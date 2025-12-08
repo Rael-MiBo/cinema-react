@@ -1,24 +1,26 @@
-import * as api from "./api";
-import type { Ingresso } from "../types";
+import { get, post, put, remove } from "./api";
+import type { Ingresso } from "../types/index";
 
 const PATH = "ingressos";
 
 export async function listar(): Promise<Ingresso[]> {
-  return api.get(PATH);
+  return await get(PATH);
 }
 
-export async function buscar(id: number): Promise<Ingresso> {
-  return api.get(`${PATH}/${id}`);
+export async function obter(id: number): Promise<Ingresso> {
+  return await get(`${PATH}/${id}`);
 }
 
-export async function criar(data: Ingresso): Promise<Ingresso> {
-  return api.post(PATH, data);
+export async function criar(body: Ingresso): Promise<Ingresso> {
+  body.valor = Number(body.valor);
+  return await post(PATH, body);
 }
 
-export async function atualizar(id: number, data: Ingresso): Promise<Ingresso> {
-  return api.put(`${PATH}/${id}`, data);
+export async function atualizar(id: number, body: Ingresso): Promise<Ingresso> {
+  body.valor = Number(body.valor);
+  return await put(`${PATH}/${id}`, body);
 }
 
-export async function remover(id: number): Promise<void> {
-  return api.remove(`${PATH}/${id}`);
+export async function removerIngresso(id: number): Promise<void> {
+  await remove(`${PATH}/${id}`);
 }

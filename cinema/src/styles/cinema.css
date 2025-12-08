@@ -25,6 +25,14 @@ h2, h4, h5, p, label {
   border: none;
 }
 
+label {
+  display: block;
+  color: #000000 !important;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+
 .btn-primary:hover {
   background-color: #b00710;
 }

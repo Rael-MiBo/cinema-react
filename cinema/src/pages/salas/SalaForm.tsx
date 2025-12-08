@@ -21,7 +21,7 @@ export default function SalaForm() {
 
   async function carregar() {
     if (id) {
-      setData(await salasService.buscar(Number(id)));
+      setData(await salasService.obter(Number(id)));
     }
   }
 

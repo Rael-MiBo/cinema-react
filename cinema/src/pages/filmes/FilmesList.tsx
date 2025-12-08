@@ -20,7 +20,7 @@ export default function FilmesList() {
 
   async function remover(id: number) {
     if (confirm("Tem certeza que deseja excluir este filme?")) {
-      await filmesService.remover(id);
+      await filmesService.removerFilme(id);
       carregar();
     }
   }

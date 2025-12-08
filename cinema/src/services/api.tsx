@@ -1,37 +1,26 @@
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+import axios from "axios";
 
-async function handleResp(res: Response) {
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || res.statusText);
-  }
-  return res.json();
-}
+const api = axios.create({
+  baseURL: "http://localhost:3000",
+});
 
 export async function get(path: string) {
-  const res = await fetch(`${BASE}/${path}`);
-  return handleResp(res);
+  const { data } = await api.get(path);
+  return data;
 }
 
 export async function post(path: string, body: any) {
-  const res = await fetch(`${BASE}/${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  return handleResp(res);
+  const { data } = await api.post(path, body);
+  return data;
 }
 
 export async function put(path: string, body: any) {
-  const res = await fetch(`${BASE}/${path}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  return handleResp(res);
+  const { data } = await api.put(path, body);
+  return data;
 }
 
 export async function remove(path: string) {
-  const res = await fetch(`${BASE}/${path}`, { method: "DELETE" });
-  return handleResp(res);
+  await api.delete(path);
 }
+
+export default api;

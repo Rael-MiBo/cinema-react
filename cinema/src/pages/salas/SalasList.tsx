@@ -19,7 +19,7 @@ export default function SalasList() {
 
   async function remover(id: number) {
     if (confirm("Excluir sala?")) {
-      await salasService.remover(id);
+      await salasService.removerSala(id);
       carregar();
     }
   }

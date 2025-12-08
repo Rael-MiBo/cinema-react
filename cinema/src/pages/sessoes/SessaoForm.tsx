@@ -68,8 +68,12 @@ export default function SessaoForm() {
           label="Filme"
           value={data.filmeId}
           onChange={(e) => update("filmeId", Number(e.target.value))}
-          options={filmes.map((f) => ({ value: f.id!, label: f.titulo }))}
+          options={filmes.map((f) => ({
+            value: Number(f.id),
+            label: `${f.titulo} (ID ${f.id})`
+          }))}
         />
+
 
         <Select
           label="Sala"

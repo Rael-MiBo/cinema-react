@@ -16,27 +16,40 @@ export default function SessoesList() {
 
   const navigate = useNavigate();
 
-  async function carregar() {
-    setSessoes(await sessoesService.listar());
-    setFilmes(await filmesService.listar());
-    setSalas(await salasService.listar());
-  }
+async function carregar() {
+  const [listaSessoes, listaFilmes, listaSalas] = await Promise.all([
+    sessoesService.listar(),
+    filmesService.listar(),
+    salasService.listar()
+  ]);
 
-  useEffect(() => {
-    carregar();
-  }, []);
+  setSessoes(listaSessoes);
+  setFilmes(listaFilmes);
+  setSalas(listaSalas);
+}
+
+useEffect(() => {
+  carregar();
+}, []);
+
 
   function filmeDe(id: number) {
-    return filmes.find((f) => f.id === id)?.titulo ?? "Desconhecido";
-  }
+  const filme = filmes.find((f) => String(f.id) === String(id));
+  return filme ? filme.titulo : "Filme removido";
+  
+}
 
   function salaDe(id: number) {
-    return salas.find((s) => s.id === id)?.numero ?? "??";
+    const sala = salas.find((s) => s.id === id);
+    return sala ? sala.numero : "Sala removida";
   }
+
+
+  
 
   async function remover(id: number) {
     if (confirm("Excluir sessão?")) {
-      await sessoesService.remover(id);
+      await sessoesService.removerSessao(id);
       carregar();
     }
   }
