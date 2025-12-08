@@ -28,7 +28,6 @@ export default function SessoesList() {
     setSalas(listaSalas);
   }
 
-  // BUSCA SEGURA (STRING VS STRING)
   function getNomeFilme(id: any) {
     const filme = filmes.find(f => String(f.id) === String(id));
     return filme ? filme.titulo : "Filme não encontrado";

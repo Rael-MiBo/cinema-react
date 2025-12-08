@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "../components/Nav/Navbar"; // Se você tiver um Navbar
+import Navbar from "../components/Nav/Navbar";
 
-// Importe as páginas novas
 import SessoesList from "../pages/sessoes/SessoesList";
 import SessaoForm from "../pages/sessoes/SessaoForm";
 import LanchesList from "../pages/lanches/lanchesList";
@@ -15,15 +14,13 @@ import VendaForm from "../pages/venda/VendaForm";
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar /> {/* Se tiver menu */}
+      <Navbar />
       <div className="container mt-4">
         <Routes>
-          {/* Rotas de Lanches (NOVAS) */}
           <Route path="/lanches" element={<LanchesList />} />
           <Route path="/lanches/novo" element={<LancheForm />} />
           <Route path="/lanches/:id" element={<LancheForm />} />
 
-          {/* Rotas de Filmes (Atualizar) */}
           <Route path="/filmes" element={<FilmesList />} />
           <Route path="/filmes/novo" element={<FilmeForm />} />
           <Route path="/filmes/:id" element={<FilmeForm />} />

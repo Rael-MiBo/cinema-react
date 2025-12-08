@@ -15,7 +15,6 @@ export default function SessaoForm() {
   const [filmes, setFilmes] = useState<Filme[]>([]);
   const [salas, setSalas] = useState<Sala[]>([]);
   
-  // Inicializa strings vazias para obrigar a seleção
   const [data, setData] = useState<Sessao>({
     filmeId: "", 
     salaId: "",
@@ -39,31 +38,27 @@ export default function SessaoForm() {
       return;
     }
 
-    // --- NOVA VALIDAÇÃO DE PERÍODO ---
-    // 1. Acha o filme selecionado na lista carregada
+
     const filmeSelecionado = filmes.find(f => String(f.id) === String(data.filmeId));
     
     if (filmeSelecionado) {
       const dataSessao = new Date(data.horarioExibicao);
       
-      // Cria datas do filme (adicionando fuso para garantir dia correto)
       const inicioFilme = new Date(filmeSelecionado.dataInicialExibicao);
-      inicioFilme.setHours(0, 0, 0, 0); // Começa à meia-noite do dia inicial
+      inicioFilme.setHours(0, 0, 0, 0);
 
       const fimFilme = new Date(filmeSelecionado.dataFinalExibicao);
-      fimFilme.setHours(23, 59, 59, 999); // Vai até o último segundo do dia final
+      fimFilme.setHours(23, 59, 59, 999);
 
-      // 2. Verifica se a sessão está fora do intervalo
       if (dataSessao < inicioFilme || dataSessao > fimFilme) {
         alert(
           `ERRO: Este filme só está em cartaz entre:\n` +
           `${inicioFilme.toLocaleDateString()} e ${fimFilme.toLocaleDateString()}.\n\n` +
           `Você tentou agendar para: ${dataSessao.toLocaleDateString()}`
         );
-        return; // BLOQUEIA O SALVAMENTO
+        return;
       }
     }
-    // ---------------------------------
 
     try {
       sessaoSchema.parse(data); 
@@ -81,7 +76,6 @@ export default function SessaoForm() {
       <h2 className="text-center mb-4">{id ? "Editar Sessão" : "Nova Sessão"}</h2>
       <form onSubmit={submit}>
         
-        {/* SELECT DE FILMES SEGURO */}
         <div className="mb-3">
           <label className="form-label">Filme</label>
           <select 
@@ -96,7 +90,6 @@ export default function SessaoForm() {
           </select>
         </div>
 
-        {/* SELECT DE SALAS SEGURO */}
         <div className="mb-3">
           <label className="form-label">Sala</label>
           <select 

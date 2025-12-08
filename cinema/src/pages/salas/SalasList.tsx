@@ -23,7 +23,6 @@ export default function SalasList() {
   }
 
   async function remover(id: string | number) {
-    // Aviso de cascata para o usuário saber o que está fazendo
     if (confirm("ATENÇÃO: Excluir esta sala vai apagar todas as sessões agendadas nela.\nDeseja continuar?")) {
       await salasService.remover(id);
       carregar();

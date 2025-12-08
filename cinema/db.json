@@ -1,42 +1,8 @@
 {
-  "filmes": [
-    {
-      "id": "346f",
-      "titulo": "Teste",
-      "sinopse": "Um filme de testes",
-      "classificacao": "L",
-      "duracao": 55,
-      "genero": " Testando",
-      "elenco": "Testando filho",
-      "dataInicialExibicao": "2025-12-31",
-      "dataFinalExibicao": "2026-01-01"
-    }
-  ],
-  "salas": [
-    {
-      "id": "709e",
-      "numero": 1,
-      "capacidade": 25
-    }
-  ],
-  "sessoes": [
-    {
-      "id": "76d8",
-      "filmeId": "346f",
-      "salaId": "709e",
-      "horarioExibicao": "2025-12-31T19:47",
-      "valorIngresso": 50
-    }
-  ],
-  "lanches": [
-    {
-      "id": "782f",
-      "nome": "pipocona",
-      "descricao": "grande pipoca",
-      "valorUnitario": 234,
-      "qtUnidade": 34
-    }
-  ],
+  "filmes": [],
+  "salas": [],
+  "sessoes": [],
+  "lanches": [],
   "pedidos": [
     {
       "id": "75f0",
@@ -108,6 +74,60 @@
       ],
       "valorTotal": 2570,
       "dataPedido": "2025-12-08T22:45:22.180Z"
+    },
+    {
+      "id": "677b",
+      "sessaoId": "76d8",
+      "qtInteira": 1,
+      "qtMeia": 0,
+      "lanches": [
+        {
+          "lancheId": "782f",
+          "quantidade": 25,
+          "valorPago": 234
+        }
+      ],
+      "valorTotal": 5900,
+      "dataPedido": "2025-12-08T22:50:20.191Z"
+    },
+    {
+      "id": "f25e",
+      "sessaoId": "76d8",
+      "qtInteira": 1,
+      "qtMeia": 0,
+      "lanches": [],
+      "valorTotal": 50,
+      "dataPedido": "2025-12-08T22:56:47.199Z"
+    },
+    {
+      "id": "4642",
+      "sessaoId": "76d8",
+      "qtInteira": 1,
+      "qtMeia": 0,
+      "lanches": [
+        {
+          "lancheId": "782f",
+          "quantidade": 1,
+          "valorPago": 234
+        }
+      ],
+      "valorTotal": 284,
+      "dataPedido": "2025-12-08T22:56:54.107Z"
+    },
+    {
+      "id": "3998",
+      "sessaoId": "76d8",
+      "qtInteira": 1,
+      "qtMeia": 0,
+      "lanches": [
+        {
+          "lancheId": "2281",
+          "quantidade": 1,
+          "valorPago": 50
+        }
+      ],
+      "valorTotal": 100,
+      "dataPedido": "2025-12-08T22:58:56.301Z"
     }
   ]
 }

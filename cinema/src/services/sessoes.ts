@@ -10,6 +10,5 @@ export const sessoesService = {
   atualizar: (id: number | string, dados: Sessao) => APIService.put<Sessao>(PATH, id, dados),
   remover: (id: number | string) => APIService.delete(PATH, id),
   
-  // Função extra para compatibilidade
   buscar: (id: number | string) => APIService.get<Sessao>(`${PATH}/${id}`), 
 };

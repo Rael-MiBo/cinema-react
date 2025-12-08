@@ -1,6 +1,5 @@
 import React from "react";
 
-// ADICIONE "success" | "warning" | "info" NA LISTA ABAIXO:
 export type Variant = "primary" | "secondary" | "danger" | "success" | "warning" | "light" | "dark";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -9,9 +9,7 @@ export const filmesService = {
   criar: (dados: Filme) => APIService.post<Filme>(PATH, dados),
   atualizar: (id: number | string, dados: Filme) => APIService.put<Filme>(PATH, id, dados),
   
-  // Função especial de remover com cascata (apaga sessões junto)
   remover: async (id: number | string) => {
-    // 1. Apagar sessões órfãs primeiro
     const sessoes = await APIService.get<Sessao[]>("sessoes");
     const relacionadas = sessoes.filter((s) => String(s.filmeId) === String(id));
     
@@ -19,7 +17,6 @@ export const filmesService = {
       if (s.id) await APIService.delete("sessoes", s.id);
     }
 
-    // 2. Apagar o filme
     await APIService.delete(PATH, id);
   }
 };

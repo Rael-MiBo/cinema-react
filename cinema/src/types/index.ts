@@ -1,23 +1,21 @@
-// Base para IDs (resolve o problema de string vs number)
 export type ID = string | number;
 
 export interface Filme {
   id?: ID;
   titulo: string;
   sinopse: string;
-  classificacao: string; // ex: "18", "L", "12"
-  duracao: number;       // em minutos
+  classificacao: string;
+  duracao: number;
   genero: string;
   elenco: string;
-  dataInicialExibicao: string; // ISO Date
-  dataFinalExibicao: string;   // ISO Date
+  dataInicialExibicao: string;
+  dataFinalExibicao: string;
 }
 
 export interface Sala {
   id?: ID;
   numero: number;
   capacidade: number;
-  // poltronas: int[][] -> na UML tem matriz, mas por enquanto vamos simplificar
 }
 export interface Sessao {
   id?: string | number;
@@ -33,10 +31,9 @@ export interface LancheCombo {
   nome: string;
   descricao: string;
   valorUnitario: number;
-  qtUnidade: number; // Estoque ou quantidade no combo
+  qtUnidade: number;
 }
 
-// O Pedido junta tudo (Ingresso + Lanche)
 export interface Pedido {
   id?: ID;
   sessaoId: ID;
@@ -45,7 +42,7 @@ export interface Pedido {
   lanches: {
     lancheId: ID;
     quantidade: number;
-    valorPago: number; // Histórico do preço no momento da compra
+    valorPago: number;
   }[];
   valorTotal: number;
   dataPedido: string;

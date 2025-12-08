@@ -27,7 +27,7 @@ export default function LanchesList() {
 
   return (
     <div>
-      <h2 className="text-center mb-4">Bombonière</h2>
+      <h2 className="text-center mb-4">Lanches</h2>
       <div className="text-center mb-3">
         <Button onClick={() => navigate("/lanches/novo")}>Novo Lanche</Button>
       </div>

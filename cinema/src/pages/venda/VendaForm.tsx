@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-// Services
 import { sessoesService } from "../../services/sessoes";
 import { filmesService } from "../../services/filmes";
 import { salasService } from "../../services/salas";
 import { lanchesService } from "../../services/lanches";
 import { pedidosService } from "../../services/pedidos";
 
-// Components & Types
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Card from "../../components/Card";
@@ -19,26 +17,22 @@ export default function VendaForm() {
   const { sessaoId } = useParams();
   const navigate = useNavigate();
 
-  // Dados
   const [sessao, setSessao] = useState<Sessao | null>(null);
   const [filme, setFilme] = useState<Filme | null>(null);
   const [sala, setSala] = useState<Sala | null>(null);
   const [listaLanches, setListaLanches] = useState<LancheCombo[]>([]);
 
-  // Formulário
   const [qtInteira, setQtInteira] = useState(0);
   const [qtMeia, setQtMeia] = useState(0);
   const [carrinhoLanches, setCarrinhoLanches] = useState<
     { lanche: LancheCombo; qt: number }[]
   >([]);
 
-  // Assentos
   const [assentosSelecionados, setAssentosSelecionados] = useState<string[]>(
     []
   );
   const [ocupados, setOcupados] = useState<string[]>([]);
 
-  // Lanche Temp
   const [lancheSelecionadoId, setLancheSelecionadoId] = useState<string>("");
   const [qtLancheTemp, setQtLancheTemp] = useState(1);
 
@@ -67,7 +61,6 @@ export default function VendaForm() {
     })();
   }, [sessaoId]);
 
-  // --- LÓGICA MAPA DE ASSENTOS ---
   function toggleAssento(assento: string) {
     if (ocupados.includes(assento)) return;
     if (assentosSelecionados.includes(assento)) {
@@ -116,7 +109,6 @@ export default function VendaForm() {
     }
     return (
       <div className="text-center p-3 border rounded bg-light">
-        {/* ÍCONE DA TELA */}
         <div className="mb-4 text-muted">
           <i className="bi bi-display fs-1 d-block"></i>
           <small>TELA</small>
@@ -169,6 +161,15 @@ export default function VendaForm() {
       return;
     }
 
+    for (const item of carrinhoLanches) {
+      if (item.qt > item.lanche.qtUnidade) {
+        alert(
+          `Erro: O lanche "${item.lanche.nome}" só tem ${item.lanche.qtUnidade} unidades em estoque.`
+        );
+        return;
+      }
+    }
+
     const total = calcularTotal();
 
     const novoPedido = {
@@ -186,6 +187,7 @@ export default function VendaForm() {
 
     try {
       pedidoSchema.parse(novoPedido);
+
       await pedidosService.criar(novoPedido);
 
       const novosOcupados = [...ocupados, ...assentosSelecionados];
@@ -196,11 +198,20 @@ export default function VendaForm() {
         });
       }
 
+      for (const item of carrinhoLanches) {
+        const novaQtd = item.lanche.qtUnidade - item.qt;
+
+        await lanchesService.atualizar(item.lanche.id!, {
+          ...item.lanche,
+          qtUnidade: novaQtd,
+        });
+      }
+
       alert(`Venda Confirmada!\nTotal: R$ ${total.toFixed(2)}`);
       navigate("/sessoes");
     } catch (err: any) {
       if (err.errors) alert(err.errors[0].message);
-      else alert("Erro ao finalizar venda.");
+      else alert("Erro ao finalizar venda: " + err.message);
     }
   }
 

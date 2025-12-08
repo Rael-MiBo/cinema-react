@@ -26,7 +26,7 @@ export default function LancheForm() {
   async function submit(e: any) {
     e.preventDefault();
     try {
-      // Validação
+
       lancheSchema.parse(data);
 
       if (id) await lanchesService.atualizar(id, data);
