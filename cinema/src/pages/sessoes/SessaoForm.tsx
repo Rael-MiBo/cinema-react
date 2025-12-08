@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
-
-import Input from "../../components/Input";
-import Select from "../../components/Select";
-import Button from "../../components/Button";
-
-import * as sessoesService from "../../services/sessoes";
-import * as filmesService from "../../services/filmes";
-import * as salasService from "../../services/salas";
-
-import { sessaoSchema } from "../../schemas/sessaoSchema";
-import type { Sessao, Filme, Sala } from "../../types";
-
 import { useNavigate, useParams } from "react-router-dom";
+import { sessoesService } from "../../services/sessoes";
+import { filmesService } from "../../services/filmes";
+import { salasService } from "../../services/salas";
+import { sessaoSchema } from "../../schemas/sessaoSchema";
+import Button from "../../components/Button";
+import Input from "../../components/Input";
+import type { Sessao, Filme, Sala } from "../../types";
 
 export default function SessaoForm() {
   const { id } = useParams();
@@ -19,78 +14,94 @@ export default function SessaoForm() {
 
   const [filmes, setFilmes] = useState<Filme[]>([]);
   const [salas, setSalas] = useState<Sala[]>([]);
-
+  
+  // Inicializa strings vazias para obrigar a seleção
   const [data, setData] = useState<Sessao>({
-    filmeId: 0,
-    salaId: 0,
+    filmeId: "", 
+    salaId: "",
     horarioExibicao: "",
+    valorIngresso: 0,
   });
 
-  function update(field: keyof Sessao, value: any) {
-    setData((d) => ({ ...d, [field]: value }));
-  }
-
-  async function carregar() {
-    setFilmes(await filmesService.listar());
-    setSalas(await salasService.listar());
-
-    if (id) {
-      const sessao = await sessoesService.buscar(Number(id));
-      setData(sessao);
-    }
-  }
-
   useEffect(() => {
-    carregar();
+    filmesService.listar().then(setFilmes);
+    salasService.listar().then(setSalas);
+    if (id) {
+      sessoesService.obter(id).then(setData).catch(console.error);
+    }
   }, [id]);
 
   async function submit(e: any) {
     e.preventDefault();
+    
+    // TRAVA DE SEGURANÇA
+    if (!data.filmeId || !data.salaId) {
+      alert("Selecione um Filme e uma Sala!");
+      return;
+    }
+
     try {
-      sessaoSchema.parse(data);
-
-      if (id) await sessoesService.atualizar(Number(id), data);
+      sessaoSchema.parse(data); // Validação Zod atualizada
+      if (id) await sessoesService.atualizar(id, data);
       else await sessoesService.criar(data);
-
       alert("Sessão salva!");
       navigate("/sessoes");
     } catch (err: any) {
-      alert("Erro: " + err.message);
+      alert("Erro: " + (err.errors ? err.errors[0].message : "Verifique os dados."));
     }
   }
 
   return (
     <div className="col-md-6 mx-auto">
       <h2 className="text-center mb-4">{id ? "Editar Sessão" : "Nova Sessão"}</h2>
-
       <form onSubmit={submit}>
-        <Select
-          label="Filme"
-          value={data.filmeId}
-          onChange={(e) => update("filmeId", Number(e.target.value))}
-          options={filmes.map((f) => ({
-            value: Number(f.id),
-            label: `${f.titulo} (ID ${f.id})`
-          }))}
-        />
+        
+        {/* SELECT DE FILMES SEGURO */}
+        <div className="mb-3">
+          <label className="form-label">Filme</label>
+          <select 
+            className="form-select" 
+            value={data.filmeId} 
+            onChange={e => setData({...data, filmeId: e.target.value})}
+          >
+            <option value="">Selecione um filme...</option>
+            {filmes.map(f => (
+              <option key={f.id} value={f.id}>{f.titulo}</option>
+            ))}
+          </select>
+        </div>
 
-
-        <Select
-          label="Sala"
-          value={data.salaId}
-          onChange={(e) => update("salaId", Number(e.target.value))}
-          options={salas.map((s) => ({ value: s.id!, label: `Sala ${s.numero}` }))}
-        />
+        {/* SELECT DE SALAS SEGURO */}
+        <div className="mb-3">
+          <label className="form-label">Sala</label>
+          <select 
+            className="form-select" 
+            value={data.salaId} 
+            onChange={e => setData({...data, salaId: e.target.value})}
+          >
+            <option value="">Selecione uma sala...</option>
+            {salas.map(s => (
+              <option key={s.id} value={s.id}>Sala {s.numero} ({s.capacidade} lug.)</option>
+            ))}
+          </select>
+        </div>
 
         <Input
           type="datetime-local"
           label="Horário"
           value={data.horarioExibicao}
-          onChange={(e) => update("horarioExibicao", e.target.value)}
+          onChange={(e) => setData({...data, horarioExibicao: e.target.value})}
         />
 
-        <div className="text-center">
-          <Button type="submit">Salvar</Button>
+        <Input
+          type="number"
+          label="Valor do Ingresso (Inteira)"
+          value={data.valorIngresso}
+          onChange={(e) => setData({...data, valorIngresso: Number(e.target.value)})}
+        />
+
+        <div className="text-center mt-3">
+          <Button type="submit">Salvar Sessão</Button>
         </div>
       </form>
     </div>

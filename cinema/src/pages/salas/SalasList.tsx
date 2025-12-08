@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as salasService from "../../services/salas";
+import { salasService } from "../../services/salas";
 import type { Sala } from "../../types";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
@@ -9,24 +9,30 @@ export default function SalasList() {
   const [salas, setSalas] = useState<Sala[]>([]);
   const navigate = useNavigate();
 
-  async function carregar() {
-    setSalas(await salasService.listar());
-  }
-
   useEffect(() => {
     carregar();
   }, []);
 
-  async function remover(id: number) {
-    if (confirm("Excluir sala?")) {
-      await salasService.removerSala(id);
+  async function carregar() {
+    try {
+      const dados = await salasService.listar();
+      setSalas(dados);
+    } catch (error) {
+      console.error("Erro ao carregar salas", error);
+    }
+  }
+
+  async function remover(id: string | number) {
+    // Aviso de cascata para o usuário saber o que está fazendo
+    if (confirm("ATENÇÃO: Excluir esta sala vai apagar todas as sessões agendadas nela.\nDeseja continuar?")) {
+      await salasService.remover(id);
       carregar();
     }
   }
 
   return (
     <div>
-      <h2 className="text-center mb-4">Salas</h2>
+      <h2 className="text-center mb-4">Salas do Cinema</h2>
 
       <div className="text-center mb-3">
         <Button onClick={() => navigate("/salas/novo")}>Nova Sala</Button>
@@ -56,7 +62,9 @@ export default function SalasList() {
                 </div>
               }
             >
-              <p><strong>Capacidade:</strong> {s.capacidade}</p>
+              <p className="fs-5">
+                <strong>Capacidade:</strong> {s.capacidade} assentos
+              </p>
             </Card>
           </div>
         ))}

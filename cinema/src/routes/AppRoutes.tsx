@@ -1,45 +1,42 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "../components/Nav/Navbar"; // Se você tiver um Navbar
 
-import FilmesList from "../pages/filmes/FilmesList";
-import FilmeForm from "../pages/filmes/FilmeForm";
-
-import SalasList from "../pages/salas/SalasList";
-import SalaForm from "../pages/salas/SalaForm";
-
+// Importe as páginas novas
 import SessoesList from "../pages/sessoes/SessoesList";
 import SessaoForm from "../pages/sessoes/SessaoForm";
+import LanchesList from "../pages/lanches/lanchesList";
+import LancheForm from "../pages/lanches/LancheForm";
+import FilmesList from "../pages/filmes/FilmesList";
+import FilmeForm from "../pages/filmes/FilmeForm";
+import SalasList from "../pages/salas/SalasList";
+import SalaForm from "../pages/salas/SalaForm";
+import VendaForm from "../pages/venda/VendaForm";
 
-import IngressoForm from "../pages/ingressos/IngressoForm";
-
-import Navbar from "../components/Nav/Navbar";
-
-export default function AppRoutes() {
+export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-
+      <Navbar /> {/* Se tiver menu */}
       <div className="container mt-4">
         <Routes>
-          {/* FILMES */}
+          {/* Rotas de Lanches (NOVAS) */}
+          <Route path="/lanches" element={<LanchesList />} />
+          <Route path="/lanches/novo" element={<LancheForm />} />
+          <Route path="/lanches/:id" element={<LancheForm />} />
+
+          {/* Rotas de Filmes (Atualizar) */}
           <Route path="/filmes" element={<FilmesList />} />
           <Route path="/filmes/novo" element={<FilmeForm />} />
           <Route path="/filmes/:id" element={<FilmeForm />} />
 
-          {/* SALAS */}
           <Route path="/salas" element={<SalasList />} />
           <Route path="/salas/novo" element={<SalaForm />} />
           <Route path="/salas/:id" element={<SalaForm />} />
 
-          {/* SESSÕES */}
           <Route path="/sessoes" element={<SessoesList />} />
           <Route path="/sessoes/novo" element={<SessaoForm />} />
           <Route path="/sessoes/:id" element={<SessaoForm />} />
 
-          {/* INGRESSOS */}
-          <Route path="/ingressos/vender/:id" element={<IngressoForm />} />
-
-          {/* HOME */}
-          <Route path="*" element={<FilmesList />} />
+          <Route path="/venda/:sessaoId" element={<VendaForm />} />
         </Routes>
       </div>
     </BrowserRouter>

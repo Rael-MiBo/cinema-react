@@ -1,35 +1,52 @@
-// 🎬 Filme
+// Base para IDs (resolve o problema de string vs number)
+export type ID = string | number;
+
 export interface Filme {
-  id?: number;
+  id?: ID;
   titulo: string;
   sinopse: string;
-  classificacao: string;
-  duracao: number; // minutos
+  classificacao: string; // ex: "18", "L", "12"
+  duracao: number;       // em minutos
   genero: string;
   elenco: string;
-  dataInicialExibicao: string; // YYYY-MM-DD
-  dataFinalExibicao: string;   // YYYY-MM-DD
+  dataInicialExibicao: string; // ISO Date
+  dataFinalExibicao: string;   // ISO Date
 }
 
-// 🏟 Sala
 export interface Sala {
-  id?: number;
+  id?: ID;
   numero: number;
   capacidade: number;
+  // poltronas: int[][] -> na UML tem matriz, mas por enquanto vamos simplificar
 }
 
-// 🎞 Sessão
 export interface Sessao {
-  id?: number;
-  filmeId: number;   // FK → Filme
-  salaId: number;    // FK → Sala
-  horarioExibicao: string; // format YYYY-MM-DDTHH:mm
+  id?: ID;
+  horarioExibicao: string; // DateTime
+  filmeId: ID; // Relacionamento
+  salaId: ID;  // Relacionamento
+  valorIngresso: number;
 }
 
-// 🎟 Ingresso
-export interface Ingresso {
-  id?: number;
-  sessaoId: number; 
-  tipo: "inteira" | "meia";
-  valor: number;
+export interface LancheCombo {
+  id?: ID;
+  nome: string;
+  descricao: string;
+  valorUnitario: number;
+  qtUnidade: number; // Estoque ou quantidade no combo
+}
+
+// O Pedido junta tudo (Ingresso + Lanche)
+export interface Pedido {
+  id?: ID;
+  sessaoId: ID;
+  qtInteira: number;
+  qtMeia: number;
+  lanches: {
+    lancheId: ID;
+    quantidade: number;
+    valorPago: number; // Histórico do preço no momento da compra
+  }[];
+  valorTotal: number;
+  dataPedido: string;
 }

@@ -1,31 +1,15 @@
 {
-  "filmes": [
+  "filmes": [],
+  "salas": [],
+  "sessoes": [],
+  "lanches": [
     {
-      "id": "00d6",
-      "titulo": "testseeee",
-      "sinopse": "testsetstests",
-      "classificacao": "18+",
-      "duracao": 60,
-      "genero": "terrre",
-      "elenco": "",
-      "dataInicialExibicao": "",
-      "dataFinalExibicao": ""
+      "id": "782f",
+      "nome": "pipocona",
+      "descricao": "grande pipoca",
+      "valorUnitario": 234,
+      "qtUnidade": 34
     }
   ],
-  "salas": [
-    {
-      "id": "cd62",
-      "numero": 2,
-      "capacidade": 50
-    }
-  ],
-  "sessoes": [
-    {
-      "id": "53b8",
-      "filmeId": 0,
-      "salaId": 0,
-      "horarioExibicao": "2025-12-09T21:15"
-    }
-  ],
-  "ingressos": []
+  "pedidos": []
 }

@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 export const filmeSchema = z.object({
-  titulo: z.string().min(2, "Título muito curto"),
-  sinopse: z.string().min(10, "Sinopse muito curta"),
-  classificacao: z.string().min(1, "Informe a classificação"),
-  duracao: z.number().min(1, "Duração inválida"),
-  genero: z.string().min(2, "Gênero muito curto"),
-  dataInicialExibicao: z.string().optional(),
-  dataFinalExibicao: z.string().optional(),
+  titulo: z.string().nonempty("Título é obrigatório"),
+  sinopse: z.string().nonempty("Sinopse é obrigatória"),
+  classificacao: z.string().nonempty("Classificação é obrigatória"),
+  duracao: z.number().min(1, "Duração deve ser maior que 0"),
+  genero: z.string().nonempty("Gênero é obrigatório"),
+  elenco: z.string().optional(),
+  dataInicialExibicao: z.string().nonempty("Data inicial obrigatória"),
+  dataFinalExibicao: z.string().nonempty("Data final obrigatória"),
 });

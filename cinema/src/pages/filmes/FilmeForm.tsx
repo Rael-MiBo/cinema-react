@@ -1,104 +1,99 @@
 import { useEffect, useState } from "react";
-import type { Filme } from "../../types";
+import { useNavigate, useParams } from "react-router-dom";
+import { filmesService } from "../../services/filmes";
+import { filmeSchema } from "../../schemas/filmeSchema";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { filmeSchema } from "../../schemas/filmeSchema";
-import * as filmesService from "../../services/filmes";
-import { useNavigate, useParams } from "react-router-dom";
+import type { Filme } from "../../types";
 
 export default function FilmeForm() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-const [data, setData] = useState<Filme>({
+  // Estado inicial completo (Evita erros de TypeScript)
+  const [data, setData] = useState<Filme>({
     titulo: "",
     sinopse: "",
     classificacao: "",
     duracao: 0,
     genero: "",
-    elenco: "", 
+    elenco: "",
     dataInicialExibicao: "",
     dataFinalExibicao: ""
-});
-
-  function update(field: keyof Filme, value: any) {
-    setData((d) => ({ ...d, [field]: value }));
-  }
-
-  async function carregar() {
-    if (id) {
-      const filme = await filmesService.obter(Number(id));
-      setData(filme);
-    }
-  }
+  });
 
   useEffect(() => {
-    carregar();
+    if (id) {
+      filmesService.obter(id).then(setData).catch(console.error);
+    }
   }, [id]);
+
+  function update(field: keyof Filme, value: any) {
+    setData((prev) => ({ ...prev, [field]: value }));
+  }
 
   async function submit(e: any) {
     e.preventDefault();
     try {
-      filmeSchema.parse(data);
-      if (id) await filmesService.atualizar(Number(id), data);
+      filmeSchema.parse(data); // Validação Zod
+
+      if (id) await filmesService.atualizar(id, data);
       else await filmesService.criar(data);
 
       alert("Filme salvo!");
       navigate("/filmes");
     } catch (err: any) {
-      alert("Erro: " + err.message);
+      if(err.errors) alert(err.errors[0].message);
+      else alert("Erro ao salvar filme.");
     }
   }
 
   return (
-    <div className="col-md-6 mx-auto">
+    <div className="col-md-8 mx-auto">
       <h2 className="text-center mb-4">{id ? "Editar Filme" : "Novo Filme"}</h2>
 
       <form onSubmit={submit}>
-        <Input
-          label="Título"
-          value={data.titulo}
-          onChange={(e) => update("titulo", e.target.value)}
-        />
-
-        <Input
-          label="Sinopse"
-          value={data.sinopse}
-          onChange={(e) => update("sinopse", e.target.value)}
-        />
-
-        <div>
-          <label className="form-label">Classificação</label>
-
-          <input
-            list="classificacoes"
-            className="form-control"
-            value={data.classificacao}
-            onChange={(e) => update("classificacao", e.target.value)}
-          />
-
-          <datalist id="classificacoes">
-            <option value="L" />
-            <option value="16" />
-            <option value="18+" />
-          </datalist>
+        <div className="row">
+          <div className="col-md-6">
+            <Input label="Título" value={data.titulo} onChange={(e) => update("titulo", e.target.value)} />
+          </div>
+          <div className="col-md-6">
+            <Input label="Gênero" value={data.genero} onChange={(e) => update("genero", e.target.value)} />
+          </div>
         </div>
 
-        <Input
-          type="number"
-          label="Duração (minutos)"
-          value={data.duracao}
-          onChange={(e) => update("duracao", Number(e.target.value))}
-        />
+        <Input label="Sinopse" value={data.sinopse} onChange={(e) => update("sinopse", e.target.value)} />
+        <Input label="Elenco" value={data.elenco} onChange={(e) => update("elenco", e.target.value)} />
 
-        <Input
-          label="Gênero"
-          value={data.genero}
-          onChange={(e) => update("genero", e.target.value)}
-        />
+        <div className="row">
+          <div className="col-md-4">
+            <Input type="number" label="Duração (min)" value={data.duracao} onChange={(e) => update("duracao", Number(e.target.value))} />
+          </div>
+          <div className="col-md-4">
+            <label className="form-label">Classificação</label>
+            <select className="form-select" value={data.classificacao} onChange={(e) => update("classificacao", e.target.value)}>
+              <option value="">Selecione...</option>
+              <option value="L">Livre</option>
+              <option value="10">10 anos</option>
+              <option value="12">12 anos</option>
+              <option value="14">14 anos</option>
+              <option value="16">16 anos</option>
+              <option value="18">18 anos</option>
+            </select>
+          </div>
+        </div>
 
-        <div className="text-center">
-          <Button type="submit">Salvar</Button>
+        <div className="row mt-3">
+          <div className="col-md-6">
+            <Input type="date" label="Início Exibição" value={data.dataInicialExibicao} onChange={(e) => update("dataInicialExibicao", e.target.value)} />
+          </div>
+          <div className="col-md-6">
+            <Input type="date" label="Fim Exibição" value={data.dataFinalExibicao} onChange={(e) => update("dataFinalExibicao", e.target.value)} />
+          </div>
+        </div>
+
+        <div className="text-center mt-4">
+          <Button type="submit">Salvar Filme</Button>
         </div>
       </form>
     </div>
