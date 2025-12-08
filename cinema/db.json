@@ -1,46 +1,31 @@
 {
   "filmes": [
     {
-      "id": "b6b8",
-      "titulo": "Testeszada",
-      "sinopse": "UIm dfeialsdkfn afdhlae",
+      "id": "346f",
+      "titulo": "Teste",
+      "sinopse": "Um filme de testes",
       "classificacao": "L",
-      "duracao": 23,
-      "genero": "Terror",
-      "elenco": "",
-      "dataInicialExibicao": "2025-12-08",
-      "dataFinalExibicao": "2025-12-10"
+      "duracao": 55,
+      "genero": " Testando",
+      "elenco": "Testando filho",
+      "dataInicialExibicao": "2025-12-31",
+      "dataFinalExibicao": "2026-01-01"
     }
   ],
   "salas": [
     {
-      "id": "a2f7",
+      "id": "709e",
       "numero": 1,
-      "capacidade": 23
+      "capacidade": 25
     }
   ],
   "sessoes": [
     {
-      "id": "d5ea",
-      "filmeId": "b6b8",
-      "salaId": "a2f7",
-      "horarioExibicao": "2025-12-09T23:03",
-      "valorIngresso": 23,
-      "lugaresOcupados": [
-        "A1",
-        "B5",
-        "B6",
-        "A6",
-        "A5",
-        "A4",
-        "C7",
-        "A3",
-        "B4",
-        "B3",
-        "B2",
-        "B1",
-        "A2"
-      ]
+      "id": "76d8",
+      "filmeId": "346f",
+      "salaId": "709e",
+      "horarioExibicao": "2025-12-31T19:47",
+      "valorIngresso": 50
     }
   ],
   "lanches": [
@@ -108,6 +93,21 @@
       ],
       "valorTotal": 2877,
       "dataPedido": "2025-12-08T02:10:38.188Z"
+    },
+    {
+      "id": "4868",
+      "sessaoId": "d5ea",
+      "qtInteira": 10,
+      "qtMeia": 0,
+      "lanches": [
+        {
+          "lancheId": "782f",
+          "quantidade": 10,
+          "valorPago": 234
+        }
+      ],
+      "valorTotal": 2570,
+      "dataPedido": "2025-12-08T22:45:22.180Z"
     }
   ]
 }
