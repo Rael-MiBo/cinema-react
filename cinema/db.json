@@ -1,7 +1,48 @@
 {
-  "filmes": [],
-  "salas": [],
-  "sessoes": [],
+  "filmes": [
+    {
+      "id": "b6b8",
+      "titulo": "Testeszada",
+      "sinopse": "UIm dfeialsdkfn afdhlae",
+      "classificacao": "L",
+      "duracao": 23,
+      "genero": "Terror",
+      "elenco": "",
+      "dataInicialExibicao": "2025-12-08",
+      "dataFinalExibicao": "2025-12-10"
+    }
+  ],
+  "salas": [
+    {
+      "id": "a2f7",
+      "numero": 1,
+      "capacidade": 23
+    }
+  ],
+  "sessoes": [
+    {
+      "id": "d5ea",
+      "filmeId": "b6b8",
+      "salaId": "a2f7",
+      "horarioExibicao": "2025-12-09T23:03",
+      "valorIngresso": 23,
+      "lugaresOcupados": [
+        "A1",
+        "B5",
+        "B6",
+        "A6",
+        "A5",
+        "A4",
+        "C7",
+        "A3",
+        "B4",
+        "B3",
+        "B2",
+        "B1",
+        "A2"
+      ]
+    }
+  ],
   "lanches": [
     {
       "id": "782f",
@@ -11,5 +52,62 @@
       "qtUnidade": 34
     }
   ],
-  "pedidos": []
+  "pedidos": [
+    {
+      "id": "75f0",
+      "sessaoId": "d5ea",
+      "qtInteira": 2,
+      "qtMeia": 2,
+      "lanches": [],
+      "valorTotal": 69,
+      "dataPedido": "2025-12-08T02:04:27.507Z"
+    },
+    {
+      "id": "4789",
+      "sessaoId": "d5ea",
+      "qtInteira": 5,
+      "qtMeia": 0,
+      "lanches": [],
+      "valorTotal": 115,
+      "dataPedido": "2025-12-08T02:07:13.745Z"
+    },
+    {
+      "id": "5db4",
+      "sessaoId": "d5ea",
+      "qtInteira": 2,
+      "qtMeia": 0,
+      "lanches": [],
+      "valorTotal": 46,
+      "dataPedido": "2025-12-08T02:07:22.315Z"
+    },
+    {
+      "id": "f452",
+      "sessaoId": "d5ea",
+      "qtInteira": 3,
+      "qtMeia": 0,
+      "lanches": [],
+      "valorTotal": 69,
+      "dataPedido": "2025-12-08T02:08:32.272Z"
+    },
+    {
+      "id": "c761",
+      "sessaoId": "d5ea",
+      "qtInteira": 3,
+      "qtMeia": 0,
+      "lanches": [
+        {
+          "lancheId": "782f",
+          "quantidade": 1,
+          "valorPago": 234
+        },
+        {
+          "lancheId": "782f",
+          "quantidade": 11,
+          "valorPago": 234
+        }
+      ],
+      "valorTotal": 2877,
+      "dataPedido": "2025-12-08T02:10:38.188Z"
+    }
+  ]
 }

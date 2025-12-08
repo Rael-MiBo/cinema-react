@@ -34,14 +34,39 @@ export default function SessaoForm() {
   async function submit(e: any) {
     e.preventDefault();
     
-    // TRAVA DE SEGURANÇA
     if (!data.filmeId || !data.salaId) {
       alert("Selecione um Filme e uma Sala!");
       return;
     }
 
+    // --- NOVA VALIDAÇÃO DE PERÍODO ---
+    // 1. Acha o filme selecionado na lista carregada
+    const filmeSelecionado = filmes.find(f => String(f.id) === String(data.filmeId));
+    
+    if (filmeSelecionado) {
+      const dataSessao = new Date(data.horarioExibicao);
+      
+      // Cria datas do filme (adicionando fuso para garantir dia correto)
+      const inicioFilme = new Date(filmeSelecionado.dataInicialExibicao);
+      inicioFilme.setHours(0, 0, 0, 0); // Começa à meia-noite do dia inicial
+
+      const fimFilme = new Date(filmeSelecionado.dataFinalExibicao);
+      fimFilme.setHours(23, 59, 59, 999); // Vai até o último segundo do dia final
+
+      // 2. Verifica se a sessão está fora do intervalo
+      if (dataSessao < inicioFilme || dataSessao > fimFilme) {
+        alert(
+          `ERRO: Este filme só está em cartaz entre:\n` +
+          `${inicioFilme.toLocaleDateString()} e ${fimFilme.toLocaleDateString()}.\n\n` +
+          `Você tentou agendar para: ${dataSessao.toLocaleDateString()}`
+        );
+        return; // BLOQUEIA O SALVAMENTO
+      }
+    }
+    // ---------------------------------
+
     try {
-      sessaoSchema.parse(data); // Validação Zod atualizada
+      sessaoSchema.parse(data); 
       if (id) await sessoesService.atualizar(id, data);
       else await sessoesService.criar(data);
       alert("Sessão salva!");
@@ -50,7 +75,7 @@ export default function SessaoForm() {
       alert("Erro: " + (err.errors ? err.errors[0].message : "Verifique os dados."));
     }
   }
-
+  
   return (
     <div className="col-md-6 mx-auto">
       <h2 className="text-center mb-4">{id ? "Editar Sessão" : "Nova Sessão"}</h2>

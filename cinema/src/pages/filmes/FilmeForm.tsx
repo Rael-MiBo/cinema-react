@@ -34,9 +34,34 @@ export default function FilmeForm() {
 
   async function submit(e: any) {
     e.preventDefault();
-    try {
-      filmeSchema.parse(data); // Validação Zod
+    
+    // --- NOVAS VALIDAÇÕES DE DATA ---
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0); // Zera hora para comparar apenas o dia
 
+    const inicio = new Date(data.dataInicialExibicao);
+    // Ajustamos o fuso horário para evitar erros de "dia anterior"
+    const inicioFuso = new Date(inicio.getTime() + inicio.getTimezoneOffset() * 60000);
+
+    const fim = new Date(data.dataFinalExibicao);
+    const fimFuso = new Date(fim.getTime() + fim.getTimezoneOffset() * 60000);
+
+    // 1. Não deixar cadastrar filme com estreia no passado (Se for regra estrita)
+    // Se você quiser permitir cadastro de histórico antigo, remova este bloco IF.
+    if (inicioFuso < hoje && !id) { // Só valida na criação (!id)
+       alert("Erro: A Data Inicial não pode ser anterior ao dia de hoje!");
+       return;
+    }
+
+    // 2. Data Final não pode ser antes da Inicial
+    if (fimFuso < inicioFuso) {
+      alert("Erro: A Data Final não pode ser antes da Data Inicial!");
+      return;
+    }
+    // --------------------------------
+
+    try {
+      filmeSchema.parse(data);
       if (id) await filmesService.atualizar(id, data);
       else await filmesService.criar(data);
 

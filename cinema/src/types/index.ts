@@ -19,13 +19,13 @@ export interface Sala {
   capacidade: number;
   // poltronas: int[][] -> na UML tem matriz, mas por enquanto vamos simplificar
 }
-
 export interface Sessao {
-  id?: ID;
-  horarioExibicao: string; // DateTime
-  filmeId: ID; // Relacionamento
-  salaId: ID;  // Relacionamento
+  id?: string | number;
+  filmeId: string | number;
+  salaId: string | number;
+  horarioExibicao: string;
   valorIngresso: number;
+  lugaresOcupados?: string[];
 }
 
 export interface LancheCombo {

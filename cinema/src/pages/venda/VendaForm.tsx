@@ -19,33 +19,32 @@ export default function VendaForm() {
   const { sessaoId } = useParams();
   const navigate = useNavigate();
 
-  // Estados dos Dados
+  // Dados
   const [sessao, setSessao] = useState<Sessao | null>(null);
   const [filme, setFilme] = useState<Filme | null>(null);
   const [sala, setSala] = useState<Sala | null>(null);
   const [listaLanches, setListaLanches] = useState<LancheCombo[]>([]);
 
-  // Estados do Formulário
+  // Formulário
   const [qtInteira, setQtInteira] = useState(0);
   const [qtMeia, setQtMeia] = useState(0);
   const [carrinhoLanches, setCarrinhoLanches] = useState<{ lanche: LancheCombo; qt: number }[]>([]);
 
-  // Estado temporário lanche
+  // Assentos
+  const [assentosSelecionados, setAssentosSelecionados] = useState<string[]>([]);
+  const [ocupados, setOcupados] = useState<string[]>([]);
+
+  // Lanche Temp
   const [lancheSelecionadoId, setLancheSelecionadoId] = useState<string>("");
   const [qtLancheTemp, setQtLancheTemp] = useState(1);
 
-  // --- CORREÇÃO AQUI: LER O PREÇO DINAMICAMENTE ---
-  // Se a sessão existe e tem preço, usa ele. Se não, usa 0.
   const valorIngresso = sessao?.valorIngresso ? Number(sessao.valorIngresso) : 0;
 
   useEffect(() => {
     (async () => {
       try {
         if (!sessaoId) return;
-        // Carrega a sessão
         const s = await sessoesService.obter(sessaoId);
-        
-        // Carrega o resto baseado na sessão
         const f = await filmesService.obter(s.filmeId);
         const sl = await salasService.obter(s.salaId);
         const lanches = await lanchesService.listar();
@@ -54,6 +53,7 @@ export default function VendaForm() {
         setFilme(f);
         setSala(sl);
         setListaLanches(lanches);
+        setOcupados(s.lugaresOcupados || []);
       } catch (error) {
         alert("Erro ao carregar dados.");
         navigate("/sessoes");
@@ -61,11 +61,70 @@ export default function VendaForm() {
     })();
   }, [sessaoId]);
 
+  // --- LÓGICA MAPA DE ASSENTOS ---
+  function toggleAssento(assento: string) {
+    if (ocupados.includes(assento)) return;
+    if (assentosSelecionados.includes(assento)) {
+      setAssentosSelecionados(prev => prev.filter(a => a !== assento));
+    } else {
+      setAssentosSelecionados(prev => [...prev, assento]);
+    }
+  }
+
+  function renderMapaAssentos() {
+    if (!sala) return null;
+    
+    const cadeirasPorLinha = 8;
+    const totalAssentos = sala.capacidade;
+    const assentosRender = [];
+    const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    for (let i = 0; i < totalAssentos; i++) {
+      const linha = letras[Math.floor(i / cadeirasPorLinha)];
+      const numero = (i % cadeirasPorLinha) + 1;
+      const idAssento = `${linha}${numero}`;
+      
+      const isOcupado = ocupados.includes(idAssento);
+      const isSelecionado = assentosSelecionados.includes(idAssento);
+
+      let cor = "btn-outline-secondary"; 
+      if (isOcupado) cor = "btn-danger disabled";
+      else if (isSelecionado) cor = "btn-success";
+
+      assentosRender.push(
+        <button
+          key={idAssento}
+          className={`btn ${cor} m-1 btn-sm fw-bold`}
+          style={{ width: "45px", height: "40px" }}
+          onClick={() => toggleAssento(idAssento)}
+          disabled={isOcupado}
+          title={isOcupado ? "Ocupado" : "Livre"}
+        >
+          {isOcupado ? <i className="bi bi-person-fill"></i> : idAssento}
+        </button>
+      );
+
+      if (numero === cadeirasPorLinha) {
+        assentosRender.push(<br key={`br-${i}`} />);
+      }
+    }
+    return (
+      <div className="text-center p-3 border rounded bg-light">
+        {/* ÍCONE DA TELA */}
+        <div className="mb-4 text-muted">
+           <i className="bi bi-display fs-1 d-block"></i>
+           <small>TELA</small>
+           <hr className="mx-auto" style={{width: "50%"}}/>
+        </div>
+        {assentosRender}
+      </div>
+    );
+  }
+
   function adicionarLanche() {
     if (!lancheSelecionadoId) return;
     const lancheReal = listaLanches.find(l => String(l.id) === String(lancheSelecionadoId));
     if (!lancheReal) return;
-
     setCarrinhoLanches((prev) => [...prev, { lanche: lancheReal, qt: qtLancheTemp }]);
     setLancheSelecionadoId("");
     setQtLancheTemp(1);
@@ -75,7 +134,6 @@ export default function VendaForm() {
     setCarrinhoLanches(prev => prev.filter((_, i) => i !== index));
   }
 
-  // --- CÁLCULO TOTAL USANDO A VARIÁVEL DINÂMICA ---
   function calcularTotal() {
     const totalIngressos = (qtInteira * valorIngresso) + (qtMeia * (valorIngresso / 2));
     const totalLanches = carrinhoLanches.reduce((acc, item) => acc + (item.lanche.valorUnitario * item.qt), 0);
@@ -83,6 +141,17 @@ export default function VendaForm() {
   }
 
   async function finalizarVenda() {
+    const totalIngressos = qtInteira + qtMeia;
+
+    if (totalIngressos === 0) {
+      alert("Selecione pelo menos um ingresso.");
+      return;
+    }
+    if (assentosSelecionados.length !== totalIngressos) {
+      alert(`Erro: Você selecionou ${totalIngressos} ingressos, mas marcou ${assentosSelecionados.length} poltronas.`);
+      return;
+    }
+
     const total = calcularTotal();
 
     const novoPedido = {
@@ -101,7 +170,13 @@ export default function VendaForm() {
     try {
       pedidoSchema.parse(novoPedido);
       await pedidosService.criar(novoPedido);
-      alert(`Venda realizada!\nTotal: R$ ${total.toFixed(2)}`);
+
+      const novosOcupados = [...ocupados, ...assentosSelecionados];
+      if (sessao) {
+        await sessoesService.atualizar(sessaoId!, { ...sessao, lugaresOcupados: novosOcupados });
+      }
+
+      alert(`Venda Confirmada!\nTotal: R$ ${total.toFixed(2)}`);
       navigate("/sessoes");
     } catch (err: any) {
       if(err.errors) alert(err.errors[0].message);
@@ -109,53 +184,53 @@ export default function VendaForm() {
     }
   }
 
-  if (!sessao || !filme || !sala) return <div className="text-center mt-5">Carregando dados...</div>;
+  if (!sessao || !filme || !sala) return <div className="text-center mt-5"><div className="spinner-border text-primary"></div></div>;
 
   return (
     <div className="row">
-      <div className="col-md-6 mb-3">
-        <Card title="Dados da Sessão">
-          <h3>{filme.titulo}</h3>
-          <p><strong>Sala:</strong> {sala.numero}</p>
-          <p><strong>Horário:</strong> {new Date(sessao.horarioExibicao).toLocaleString()}</p>
-          <hr />
+      <div className="col-md-7 mb-3">
+        <Card title={<span><i className="bi bi-grid-3x3-gap-fill me-2"></i>Seleção de Assentos</span>}>
+          <div className="d-flex justify-content-center gap-3 mb-3">
+            <span className="badge bg-secondary"><i className="bi bi-circle me-1"></i>Livre</span>
+            <span className="badge bg-success"><i className="bi bi-check-circle me-1"></i>Selecionado</span>
+            <span className="badge bg-danger"><i className="bi bi-x-circle me-1"></i>Ocupado</span>
+          </div>
           
-          <h5 className="mb-3">Ingressos</h5>
-          {/* Se o valor for 0, avisa que precisa configurar a sessão */}
-          {valorIngresso === 0 && (
-            <div className="alert alert-warning">
-              Atenção: Esta sessão está com preço R$ 0,00. Edite a sessão para corrigir.
-            </div>
-          )}
-
-          <div className="row">
-            <div className="col-6">
-              <Input 
-                type="number" 
-                // MOSTRA O PREÇO NO LABEL
-                label={`Inteira (R$ ${valorIngresso.toFixed(2)})`}
-                value={qtInteira}
-                onChange={e => setQtInteira(Math.max(0, Number(e.target.value)))}
-              />
-            </div>
-            <div className="col-6">
-              <Input 
-                type="number" 
-                // MOSTRA O PREÇO NO LABEL
-                label={`Meia (R$ ${(valorIngresso / 2).toFixed(2)})`}
-                value={qtMeia}
-                onChange={e => setQtMeia(Math.max(0, Number(e.target.value)))}
-              />
+          {renderMapaAssentos()}
+          
+          <div className="mt-4 p-3 bg-white border rounded">
+            <h5 className="mb-3"><i className="bi bi-ticket-perforated-fill me-2"></i>Ingressos</h5>
+            <div className="row">
+              <div className="col-6">
+                <Input 
+                  type="number" 
+                  label={`Inteira (R$ ${valorIngresso.toFixed(2)})`}
+                  value={qtInteira}
+                  onChange={e => setQtInteira(Math.max(0, Number(e.target.value)))}
+                />
+              </div>
+              <div className="col-6">
+                <Input 
+                  type="number" 
+                  label={`Meia (R$ ${(valorIngresso / 2).toFixed(2)})`}
+                  value={qtMeia}
+                  onChange={e => setQtMeia(Math.max(0, Number(e.target.value)))}
+                />
+              </div>
             </div>
           </div>
         </Card>
       </div>
 
-      <div className="col-md-6">
-        <Card title="Bombonière (Lanches)">
+      <div className="col-md-5">
+        <Card title={<span><i className="bi bi-basket2-fill me-2"></i>Resumo & Lanches</span>}>
+          <h4>{filme.titulo}</h4>
+          <p className="text-muted"><i className="bi bi-clock me-1"></i>{new Date(sessao.horarioExibicao).toLocaleString()}</p>
+          <hr />
+
           <div className="d-flex gap-2 align-items-end mb-3">
             <div className="flex-grow-1">
-              <label className="form-label">Lanche</label>
+              <label className="form-label">Adicionar Lanche</label>
               <select 
                 className="form-select" 
                 value={lancheSelecionadoId}
@@ -169,39 +244,45 @@ export default function VendaForm() {
                 ))}
               </select>
             </div>
-            <div style={{width: "80px"}}>
-              <label className="form-label">Qtd</label>
-              <input 
-                type="number" className="form-control" value={qtLancheTemp}
-                onChange={e => setQtLancheTemp(Number(e.target.value))}
-              />
+            <div style={{width: "70px"}}>
+              <input type="number" className="form-control" value={qtLancheTemp} onChange={e => setQtLancheTemp(Number(e.target.value))} />
             </div>
-            <Button onClick={adicionarLanche}>+</Button>
+                <Button 
+                  onClick={adicionarLanche} 
+                  variant="success" 
+                  style={{ height: "50px", width: "50px" }}
+                >
+            <i className="bi bi-plus-lg fs-6"></i>
+                </Button>
           </div>
 
-          {carrinhoLanches.length > 0 && (
-            <table className="table table-sm table-striped">
-              <thead><tr><th>Item</th><th>Qtd</th><th>Total</th><th></th></tr></thead>
-              <tbody>
+          {carrinhoLanches.length > 0 ? (
+             <ul className="list-group mb-3">
                 {carrinhoLanches.map((item, idx) => (
-                  <tr key={idx}>
-                    <td>{item.lanche.nome}</td>
-                    <td>{item.qt}</td>
-                    <td>R$ {(item.qt * item.lanche.valorUnitario).toFixed(2)}</td>
-                    <td><button className="btn btn-sm btn-outline-danger" onClick={() => removerLanche(idx)}>X</button></td>
-                  </tr>
+                  <li key={idx} className="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span className="fw-bold">{item.qt}x</span> {item.lanche.nome}
+                    </div>
+                    <div>
+                        <span className="me-3">R$ {(item.qt * item.lanche.valorUnitario).toFixed(2)}</span>
+                        <button className="btn btn-sm btn-outline-danger border-0" onClick={() => removerLanche(idx)}>
+                            <i className="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                  </li>
                 ))}
-              </tbody>
-            </table>
+             </ul>
+          ) : (
+            <div className="text-center text-muted mb-3 small">Nenhum lanche selecionado</div>
           )}
-        </Card>
 
-        <div className="card mt-3 bg-light">
-          <div className="card-body text-center">
-            <h2 className="text-primary">Total: R$ {calcularTotal().toFixed(2)}</h2>
-            <Button className="w-100 mt-2" onClick={finalizarVenda}>FINALIZAR</Button>
+          <div className="alert alert-primary mt-3 text-center">
+            <h3 className="fw-bold"><i className="bi bi-cart4 me-2"></i>R$ {calcularTotal().toFixed(2)}</h3>
+            <Button className="w-100 mt-2 py-2 fs-5" onClick={finalizarVenda}>
+                <i className="bi bi-check-lg me-2"></i>CONFIRMAR COMPRA
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

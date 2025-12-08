@@ -1,36 +1,39 @@
 import React from "react";
-import clsx from "clsx";
 
-type Variant = "primary" | "secondary" | "danger" | "link";
-type Size = "sm" | "md" | "lg";
+// ADICIONE "success" | "warning" | "info" NA LISTA ABAIXO:
+export type Variant = "primary" | "secondary" | "danger" | "success" | "warning" | "light" | "dark";
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
-  size?: Size;
-  className?: string;
+  size?: "sm" | "lg";
+  isLoading?: boolean;
 };
 
 export default function Button({
-  variant = "primary",
-  size = "md",
-  className,
   children,
+  variant = "primary",
+  size,
+  className = "",
+  isLoading,
   ...rest
 }: ButtonProps) {
-  const base = "btn";
-  const sizeClass = size === "sm" ? "btn-sm" : size === "lg" ? "btn-lg" : "";
-  const variantClass =
-    variant === "primary"
-      ? "btn-primary"
-      : variant === "secondary"
-      ? "btn-secondary"
-      : variant === "danger"
-      ? "btn-danger"
-      : "btn-link";
+  const variantClass = variant ? `btn-${variant}` : "";
+  const sizeClass = size ? `btn-${size}` : "";
 
   return (
-    <button className={clsx(base, variantClass, sizeClass, className)} {...rest}>
-      {children}
+    <button
+      className={`btn ${variantClass} ${sizeClass} ${className}`}
+      {...rest}
+      disabled={isLoading || rest.disabled}
+    >
+      {isLoading ? (
+        <>
+          <span className="spinner-border spinner-border-sm me-2" />
+          Carregando...
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 }
