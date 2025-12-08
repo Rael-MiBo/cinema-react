@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Nav/Navbar";
-import Home from "./pages/home/home";
+import Home from "./pages/home/Home";
 
 import FilmesList from "./pages/filmes/FilmesList";
 import FilmeForm from "./pages/filmes/FilmeForm";
