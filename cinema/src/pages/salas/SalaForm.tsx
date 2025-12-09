@@ -27,32 +27,25 @@ export default function SalaForm() {
   return (
     <div className="row justify-content-center">
       <div className="col-md-5">
-        <div className="card shadow border-0">
-          <div className="card-header bg-success text-white py-3">
-            <h4 className="mb-0 fw-bold"><i className="bi bi-grid-3x3-gap-fill me-2"></i>{id ? "Editar Sala" : "Nova Sala"}</h4>
-          </div>
-          <div className="card-body p-4">
-            <form onSubmit={submit}>
+        <div className="card shadow-lg">
+          <div className="card-body p-5 text-center">
+            
+            <i className="bi bi-display display-1 text-secondary"></i>
+            <h3 className="fw-bold my-3">{id ? "Configurar Sala" : "Nova Sala"}</h3>
+            <p className="text-muted mb-4">Defina o número e a capacidade máxima de assentos.</p>
+
+            <form onSubmit={submit} className="text-start">
               
-              <Input 
-                type="number" 
-                label="Número da Sala" 
-                value={data.numero} 
-                onChange={e => setData({...data, numero: Number(e.target.value)})} 
-              />
-
-              <Input 
-                type="number" 
-                label="Capacidade Máxima" 
-                value={data.capacidade} 
-                onChange={e => setData({...data, capacidade: Number(e.target.value)})} 
-              />
-              <div className="form-text mb-3">Isso definirá o mapa de assentos.</div>
-
-              <div className="d-grid gap-2">
-                <Button type="submit" variant="success"><i className="bi bi-check-lg me-2"></i>Salvar Dados</Button>
-                <Button type="button" variant="outline-secondary" onClick={() => navigate("/salas")}>Cancelar</Button>
+              <div className="mb-3">
+                 <Input type="number" label="Número da Sala" value={data.numero} onChange={e => setData({...data, numero: Number(e.target.value)})} />
               </div>
+
+              <div className="mb-4">
+                 <Input type="number" label="Capacidade (Lugares)" value={data.capacidade} onChange={e => setData({...data, capacidade: Number(e.target.value)})} />
+              </div>
+
+              <Button type="submit" variant="primary" className="w-100 mb-2">Salvar Configuração</Button>
+              <Button type="button" variant="outline-secondary" className="w-100" onClick={() => navigate("/salas")}>Voltar</Button>
 
             </form>
           </div>

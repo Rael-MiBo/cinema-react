@@ -9,7 +9,7 @@ import { pedidosService } from "../../services/pedidos";
 
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import Card from "../../components/Card";
+import Select from "../../components/Select"; // <--- Usando seu componente
 import type { Sessao, Filme, Sala, LancheCombo } from "../../types";
 import { pedidoSchema } from "../../schemas/pedidoSchema";
 
@@ -24,21 +24,15 @@ export default function VendaForm() {
 
   const [qtInteira, setQtInteira] = useState(0);
   const [qtMeia, setQtMeia] = useState(0);
-  const [carrinhoLanches, setCarrinhoLanches] = useState<
-    { lanche: LancheCombo; qt: number }[]
-  >([]);
+  const [carrinhoLanches, setCarrinhoLanches] = useState<{ lanche: LancheCombo; qt: number }[]>([]);
 
-  const [assentosSelecionados, setAssentosSelecionados] = useState<string[]>(
-    []
-  );
+  const [assentosSelecionados, setAssentosSelecionados] = useState<string[]>([]);
   const [ocupados, setOcupados] = useState<string[]>([]);
 
   const [lancheSelecionadoId, setLancheSelecionadoId] = useState<string>("");
   const [qtLancheTemp, setQtLancheTemp] = useState(1);
 
-  const valorIngresso = sessao?.valorIngresso
-    ? Number(sessao.valorIngresso)
-    : 0;
+  const valorIngresso = sessao?.valorIngresso ? Number(sessao.valorIngresso) : 0;
 
   useEffect(() => {
     (async () => {
@@ -64,15 +58,14 @@ export default function VendaForm() {
   function toggleAssento(assento: string) {
     if (ocupados.includes(assento)) return;
     if (assentosSelecionados.includes(assento)) {
-      setAssentosSelecionados((prev) => prev.filter((a) => a !== assento));
+      setAssentosSelecionados(prev => prev.filter(a => a !== assento));
     } else {
-      setAssentosSelecionados((prev) => [...prev, assento]);
+      setAssentosSelecionados(prev => [...prev, assento]);
     }
   }
 
   function renderMapaAssentos() {
     if (!sala) return null;
-
     const cadeirasPorLinha = 8;
     const totalAssentos = sala.capacidade;
     const assentosRender = [];
@@ -82,37 +75,32 @@ export default function VendaForm() {
       const linha = letras[Math.floor(i / cadeirasPorLinha)];
       const numero = (i % cadeirasPorLinha) + 1;
       const idAssento = `${linha}${numero}`;
-
       const isOcupado = ocupados.includes(idAssento);
       const isSelecionado = assentosSelecionados.includes(idAssento);
 
-      let cor = "btn-outline-secondary";
+      let cor = "btn-outline-secondary"; 
       if (isOcupado) cor = "btn-danger disabled";
       else if (isSelecionado) cor = "btn-success";
 
       assentosRender.push(
         <button
           key={idAssento}
-          className={`btn ${cor} m-1 btn-sm fw-bold`}
+          className={`btn ${cor} m-1 fw-bold`}
           style={{ width: "45px", height: "40px" }}
           onClick={() => toggleAssento(idAssento)}
           disabled={isOcupado}
-          title={isOcupado ? "Ocupado" : "Livre"}
         >
           {isOcupado ? <i className="bi bi-person-fill"></i> : idAssento}
         </button>
       );
 
-      if (numero === cadeirasPorLinha) {
-        assentosRender.push(<br key={`br-${i}`} />);
-      }
+      if (numero === cadeirasPorLinha) assentosRender.push(<br key={`br-${i}`} />);
     }
     return (
-      <div className="text-center p-3 border rounded bg-light">
-        <div className="mb-4 text-muted">
-          <i className="bi bi-display fs-1 d-block"></i>
-          <small>TELA</small>
-          <hr className="mx-auto" style={{ width: "50%" }} />
+      <div className="text-center p-4 border rounded bg-dark mb-3">
+        <div className="mb-3 text-muted">
+           <i className="bi bi-display fs-1 d-block text-secondary opacity-50"></i>
+           <small>TELA</small>
         </div>
         {assentosRender}
       </div>
@@ -121,251 +109,174 @@ export default function VendaForm() {
 
   function adicionarLanche() {
     if (!lancheSelecionadoId) return;
-    const lancheReal = listaLanches.find(
-      (l) => String(l.id) === String(lancheSelecionadoId)
-    );
+    const lancheReal = listaLanches.find(l => String(l.id) === String(lancheSelecionadoId));
     if (!lancheReal) return;
-    setCarrinhoLanches((prev) => [
-      ...prev,
-      { lanche: lancheReal, qt: qtLancheTemp },
-    ]);
+    setCarrinhoLanches((prev) => [...prev, { lanche: lancheReal, qt: qtLancheTemp }]);
     setLancheSelecionadoId("");
     setQtLancheTemp(1);
   }
 
   function removerLanche(index: number) {
-    setCarrinhoLanches((prev) => prev.filter((_, i) => i !== index));
+    setCarrinhoLanches(prev => prev.filter((_, i) => i !== index));
   }
 
   function calcularTotal() {
-    const totalIngressos =
-      qtInteira * valorIngresso + qtMeia * (valorIngresso / 2);
-    const totalLanches = carrinhoLanches.reduce(
-      (acc, item) => acc + item.lanche.valorUnitario * item.qt,
-      0
-    );
+    const totalIngressos = (qtInteira * valorIngresso) + (qtMeia * (valorIngresso / 2));
+    const totalLanches = carrinhoLanches.reduce((acc, item) => acc + (item.lanche.valorUnitario * item.qt), 0);
     return totalIngressos + totalLanches;
   }
 
   async function finalizarVenda() {
     const totalIngressos = qtInteira + qtMeia;
 
-    if (totalIngressos === 0) {
-      alert("Selecione pelo menos um ingresso.");
-      return;
+    if (totalIngressos === 0) { alert("Selecione pelo menos um ingresso."); return; }
+    if (assentosSelecionados.length !== totalIngressos) { 
+      alert(`Selecione ${totalIngressos} assentos no mapa (você marcou ${assentosSelecionados.length}).`); return; 
     }
-    if (assentosSelecionados.length !== totalIngressos) {
-      alert(
-        `Erro: Você selecionou ${totalIngressos} ingressos, mas marcou ${assentosSelecionados.length} poltronas.`
-      );
-      return;
-    }
-
+    
+    // Verifica estoque
     for (const item of carrinhoLanches) {
       if (item.qt > item.lanche.qtUnidade) {
-        alert(
-          `Erro: O lanche "${item.lanche.nome}" só tem ${item.lanche.qtUnidade} unidades em estoque.`
-        );
-        return;
+        alert(`O item "${item.lanche.nome}" só tem ${item.lanche.qtUnidade} un. em estoque.`); return;
       }
     }
 
     const total = calcularTotal();
-
     const novoPedido = {
       sessaoId: sessaoId!,
-      qtInteira,
-      qtMeia,
-      lanches: carrinhoLanches.map((item) => ({
-        lancheId: item.lanche.id!,
-        quantidade: item.qt,
-        valorPago: item.lanche.valorUnitario,
+      qtInteira, qtMeia,
+      lanches: carrinhoLanches.map(item => ({
+        lancheId: item.lanche.id!, quantidade: item.qt, valorPago: item.lanche.valorUnitario
       })),
       valorTotal: total,
-      dataPedido: new Date().toISOString(),
+      dataPedido: new Date().toISOString()
     };
 
     try {
       pedidoSchema.parse(novoPedido);
-
       await pedidosService.criar(novoPedido);
 
-      const novosOcupados = [...ocupados, ...assentosSelecionados];
       if (sessao) {
-        await sessoesService.atualizar(sessaoId!, {
-          ...sessao,
-          lugaresOcupados: novosOcupados,
-        });
+        await sessoesService.atualizar(sessaoId!, { ...sessao, lugaresOcupados: [...ocupados, ...assentosSelecionados] });
       }
 
       for (const item of carrinhoLanches) {
-        const novaQtd = item.lanche.qtUnidade - item.qt;
-
-        await lanchesService.atualizar(item.lanche.id!, {
-          ...item.lanche,
-          qtUnidade: novaQtd,
-        });
+        await lanchesService.atualizar(item.lanche.id!, { ...item.lanche, qtUnidade: item.lanche.qtUnidade - item.qt });
       }
 
-      alert(`Venda Confirmada!\nTotal: R$ ${total.toFixed(2)}`);
+      alert(`Venda Confirmada! Total: R$ ${total.toFixed(2)}`);
       navigate("/sessoes");
     } catch (err: any) {
-      if (err.errors) alert(err.errors[0].message);
-      else alert("Erro ao finalizar venda: " + err.message);
+      if(err.errors) alert(err.errors[0].message); else alert("Erro ao finalizar.");
     }
   }
 
-  if (!sessao || !filme || !sala)
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-primary"></div>
-      </div>
-    );
+  if (!sessao || !filme || !sala) return <div className="text-center mt-5"><div className="spinner-border text-danger"></div></div>;
 
   return (
     <div className="row">
-      <div className="col-md-7 mb-3">
-        <Card
-          title={
-            <span>
-              <i className="bi bi-grid-3x3-gap-fill me-2"></i>Seleção de
-              Assentos
-            </span>
-          }
-        >
-          <div className="d-flex justify-content-center gap-3 mb-3">
-            <span className="badge bg-secondary">
-              <i className="bi bi-circle me-1"></i>Livre
-            </span>
-            <span className="badge bg-success">
-              <i className="bi bi-check-circle me-1"></i>Selecionado
-            </span>
-            <span className="badge bg-danger">
-              <i className="bi bi-x-circle me-1"></i>Ocupado
-            </span>
-          </div>
-
-          {renderMapaAssentos()}
-
-          <div className="mt-4 p-3 bg-white border rounded">
-            <h5 className="mb-3">
-              <i className="bi bi-ticket-perforated-fill me-2"></i>Ingressos
-            </h5>
-            <div className="row">
-              <div className="col-6">
-                <Input
-                  type="number"
-                  label={`Inteira (R$ ${valorIngresso.toFixed(2)})`}
-                  value={qtInteira}
-                  onChange={(e) =>
-                    setQtInteira(Math.max(0, Number(e.target.value)))
-                  }
-                />
-              </div>
-              <div className="col-6">
-                <Input
-                  type="number"
-                  label={`Meia (R$ ${(valorIngresso / 2).toFixed(2)})`}
-                  value={qtMeia}
-                  onChange={(e) =>
-                    setQtMeia(Math.max(0, Number(e.target.value)))
-                  }
-                />
+      {/* COLUNA ESQUERDA: Mapa e Ingressos */}
+      <div className="col-lg-7 mb-4">
+        <div className="card shadow-lg h-100">
+          <div className="card-body p-4">
+            <h4 className="fw-bold mb-3"><i className="bi bi-grid-3x3-gap-fill me-2 text-primary"></i>Assentos</h4>
+            
+            {renderMapaAssentos()}
+            
+            <div className="mt-4 p-3 bg-dark bg-opacity-25 rounded border border-secondary">
+              <h5 className="mb-3 text-white"><i className="bi bi-ticket-perforated me-2"></i>Ingressos</h5>
+              <div className="row g-3">
+                <div className="col-6">
+                  <Input 
+                    type="number" 
+                    label={`Inteira (R$ ${valorIngresso.toFixed(2)})`}
+                    value={qtInteira}
+                    onChange={e => setQtInteira(Math.max(0, Number(e.target.value)))}
+                  />
+                </div>
+                <div className="col-6">
+                  <Input 
+                    type="number" 
+                    label={`Meia (R$ ${(valorIngresso / 2).toFixed(2)})`}
+                    value={qtMeia}
+                    onChange={e => setQtMeia(Math.max(0, Number(e.target.value)))}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
-      <div className="col-md-5">
-        <Card
-          title={
-            <span>
-              <i className="bi bi-basket2-fill me-2"></i>Resumo & Lanches
-            </span>
-          }
-        >
-          <h4>{filme.titulo}</h4>
-          <p className="text-muted">
-            <i className="bi bi-clock me-1"></i>
-            {new Date(sessao.horarioExibicao).toLocaleString()}
-          </p>
-          <hr />
+      {/* COLUNA DIREITA: Resumo e Lanches */}
+      <div className="col-lg-5 mb-4">
+        <div className="card shadow-lg h-100">
+          <div className="card-body p-4 d-flex flex-column">
+            
+            <div className="mb-4">
+              <h3 className="fw-bold text-danger">{filme.titulo}</h3>
+              <div className="text-muted small">
+                <i className="bi bi-clock me-1"></i>{new Date(sessao.horarioExibicao).toLocaleString()} 
+                <span className="mx-2">|</span> 
+                Sala {sala.numero}
+              </div>
+            </div>
 
-          <div className="d-flex gap-2 align-items-end mb-3">
+            <h5 className="fw-bold mb-3"><i className="bi bi-basket2 me-2 text-warning"></i>Lanches</h5>
+            
+            <div className="row g-2 align-items-end mb-3">
+               <div className="col-8">
+                 <Select 
+                    label="Item"
+                    value={lancheSelecionadoId}
+                    onChange={e => setLancheSelecionadoId(e.target.value)}
+                    options={[
+                        { value: "", label: "Selecione..." },
+                        ...listaLanches.map(l => ({ value: String(l.id), label: `${l.nome} (R$ ${l.valorUnitario})` }))
+                    ]}
+                 />
+               </div>
+               <div className="col-4">
+                  <label className="form-label text-muted small">Qtd</label>
+                  <div className="input-group">
+                    <input type="number" className="form-control" value={qtLancheTemp} onChange={e => setQtLancheTemp(Number(e.target.value))} />
+                    <button className="btn btn-warning" onClick={adicionarLanche}><i className="bi bi-plus-lg"></i></button>
+                  </div>
+               </div>
+            </div>
+
             <div className="flex-grow-1">
-              <label className="form-label">Adicionar Lanche</label>
-              <select
-                className="form-select"
-                value={lancheSelecionadoId}
-                onChange={(e) => setLancheSelecionadoId(e.target.value)}
-              >
-                <option value="">Selecione...</option>
-                {listaLanches.map((l) => (
-                  <option key={String(l.id)} value={String(l.id)}>
-                    {l.nome} - R$ {Number(l.valorUnitario).toFixed(2)}
-                  </option>
-                ))}
-              </select>
+              {carrinhoLanches.length > 0 ? (
+                <ul className="list-group list-group-flush mb-3 rounded">
+                    {carrinhoLanches.map((item, idx) => (
+                      <li key={idx} className="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-secondary">
+                        <div><span className="fw-bold text-warning">{item.qt}x</span> {item.lanche.nome}</div>
+                        <div>
+                            <span className="me-3">R$ {(item.qt * item.lanche.valorUnitario).toFixed(2)}</span>
+                            <i className="bi bi-trash text-danger" style={{cursor:'pointer'}} onClick={() => removerLanche(idx)}></i>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              ) : (
+                <div className="text-center text-muted small py-4 border border-secondary border-dashed rounded mb-3">
+                   Nenhum lanche adicionado
+                </div>
+              )}
             </div>
-            <div style={{ width: "70px" }}>
-              <input
-                type="number"
-                className="form-control"
-                value={qtLancheTemp}
-                onChange={(e) => setQtLancheTemp(Number(e.target.value))}
-              />
-            </div>
-            <Button
-              onClick={adicionarLanche}
-              variant="success"
-              className="w-10"
-            >
-              <i className="bi bi-plus-lg fs-5"></i>
-            </Button>
-          </div>
 
-          {carrinhoLanches.length > 0 ? (
-            <ul className="list-group mb-3">
-              {carrinhoLanches.map((item, idx) => (
-                <li
-                  key={idx}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <div>
-                    <span className="fw-bold">{item.qt}x</span>{" "}
-                    {item.lanche.nome}
-                  </div>
-                  <div>
-                    <span className="me-3">
-                      R$ {(item.qt * item.lanche.valorUnitario).toFixed(2)}
-                    </span>
-                    <button
-                      className="btn btn-sm btn-outline-danger border-0"
-                      onClick={() => removerLanche(idx)}
-                    >
-                      <i className="bi bi-trash-fill"></i>
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-center text-muted mb-3 small">
-              Nenhum lanche selecionado
+            <div className="mt-auto pt-3 border-top border-secondary">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                 <span className="fs-5 text-muted">Total a Pagar</span>
+                 <span className="fs-2 fw-bold text-success">R$ {calcularTotal().toFixed(2)}</span>
+              </div>
+              <Button className="w-100 py-3 fs-5" onClick={finalizarVenda} variant="success">
+                  <i className="bi bi-check-circle-fill me-2"></i>CONFIRMAR COMPRA
+              </Button>
             </div>
-          )}
 
-          <div className="alert alert-primary mt-3 text-center">
-            <h3 className="fw-bold">
-              <i className="bi bi-cart4 me-2"></i>R${" "}
-              {calcularTotal().toFixed(2)}
-            </h3>
-            <Button className="w-100 mt-2 py-2 fs-5" onClick={finalizarVenda}>
-              <i className="bi bi-check-lg me-2"></i>CONFIRMAR COMPRA
-            </Button>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

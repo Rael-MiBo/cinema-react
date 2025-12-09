@@ -41,7 +41,7 @@ export default function SessaoForm() {
       sessaoSchema.parse(data);
       if (id) await sessoesService.atualizar(id, data);
       else await sessoesService.criar(data);
-      alert("Sessão agendada!");
+      alert("Sessão agendada com sucesso!");
       navigate("/sessoes");
     } catch (err: any) { alert(err.errors ? err.errors[0].message : "Erro."); }
   }
@@ -49,45 +49,62 @@ export default function SessaoForm() {
   return (
     <div className="row justify-content-center">
       <div className="col-md-7">
-        <div className="card shadow border-0">
-          <div className="card-header bg-dark text-white py-3">
-             <h4 className="mb-0 fw-bold"><i className="bi bi-calendar-event me-2"></i>Agendar Sessão</h4>
-          </div>
-          <div className="card-body p-4">
+        <div className="card shadow-lg">
+          <div className="card-body p-5">
+            
+            <div className="text-center mb-4">
+               <i className="bi bi-calendar-event display-1 text-primary"></i>
+               <h3 className="mt-2 fw-bold">{id ? "Editar Sessão" : "Agendar Sessão"}</h3>
+            </div>
+
             <form onSubmit={submit}>
               
-              <Select 
-                label="Filme"
-                value={data.filmeId}
-                onChange={e => setData({...data, filmeId: e.target.value})}
-                options={[
-                    { value: "", label: "Selecione um filme..." },
-                    ...filmes.map(f => ({ value: f.id!, label: f.titulo }))
-                ]}
-              />
+              <div className="mb-3">
+                <Select 
+                  label="Filme em Cartaz"
+                  value={data.filmeId}
+                  onChange={e => setData({...data, filmeId: e.target.value})}
+                  options={[
+                      { value: "", label: "Selecione..." },
+                      ...filmes.map(f => ({ value: f.id!, label: f.titulo }))
+                  ]}
+                />
+              </div>
 
-              <Select 
-                label="Sala"
-                value={data.salaId}
-                onChange={e => setData({...data, salaId: e.target.value})}
-                options={[
-                    { value: "", label: "Selecione uma sala..." },
-                    ...salas.map(s => ({ value: s.id!, label: `Sala ${s.numero} (${s.capacidade} lug.)` }))
-                ]}
-              />
+              <div className="mb-3">
+                <Select 
+                  label="Sala de Exibição"
+                  value={data.salaId}
+                  onChange={e => setData({...data, salaId: e.target.value})}
+                  options={[
+                      { value: "", label: "Selecione..." },
+                      ...salas.map(s => ({ value: s.id!, label: `Sala ${s.numero} (${s.capacidade} lug.)` }))
+                  ]}
+                />
+              </div>
 
-              <div className="row">
+              <div className="row g-3">
                 <div className="col-md-7">
-                  <Input type="datetime-local" label="Data e Horário" value={data.horarioExibicao} onChange={(e) => setData({...data, horarioExibicao: e.target.value})} />
+                  <Input 
+                    type="datetime-local" 
+                    label="Data e Horário" 
+                    value={data.horarioExibicao} 
+                    onChange={(e) => setData({...data, horarioExibicao: e.target.value})} 
+                  />
                 </div>
                 <div className="col-md-5">
-                   <Input type="number" label="Valor Ingresso (R$)" value={data.valorIngresso} onChange={(e) => setData({...data, valorIngresso: Number(e.target.value)})} />
+                   <Input 
+                     type="number" 
+                     label="Valor Ingresso (R$)" 
+                     value={data.valorIngresso} 
+                     onChange={(e) => setData({...data, valorIngresso: Number(e.target.value)})} 
+                   />
                 </div>
               </div>
 
-              <div className="d-flex justify-content-end gap-2 mt-4">
-                 <Button type="button" variant="light" onClick={() => navigate("/sessoes")}>Cancelar</Button>
-                 <Button type="submit" variant="primary">Confirmar Agendamento</Button>
+              <div className="d-grid gap-2 mt-4">
+                 <Button type="submit" variant="primary" size="lg">Confirmar Agendamento</Button>
+                 <Button type="button" variant="outline-secondary" onClick={() => navigate("/sessoes")}>Cancelar</Button>
               </div>
             </form>
           </div>

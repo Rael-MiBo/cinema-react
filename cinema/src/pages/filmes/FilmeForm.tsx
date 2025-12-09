@@ -39,26 +39,30 @@ export default function FilmeForm() {
 
   return (
     <div className="row justify-content-center">
-      <div className="col-md-8">
-        <div className="card shadow border-0">
-          <div className="card-header bg-primary text-white py-3">
-            <h4 className="mb-0 fw-bold"><i className="bi bi-camera-reels me-2"></i>{id ? "Editar Filme" : "Novo Filme"}</h4>
-          </div>
-          
-          <div className="card-body p-4">
+      <div className="col-lg-8">
+        <div className="card shadow-lg">
+          <div className="card-body p-5">
+            
+            <h2 className="mb-4 fw-bold text-danger">
+              <i className="bi bi-film me-2"></i>
+              {id ? "Editar Filme" : "Adicionar ao Catálogo"}
+            </h2>
+            
             <form onSubmit={submit}>
-              <div className="row">
+              <div className="row g-3">
                 <div className="col-md-8">
-                  <Input label="Título do Filme" value={data.titulo} onChange={(e) => update("titulo", e.target.value)} />
+                  <Input label="Título Original" value={data.titulo} onChange={(e) => update("titulo", e.target.value)} />
                 </div>
                 <div className="col-md-4">
                    <Input label="Gênero" value={data.genero} onChange={(e) => update("genero", e.target.value)} />
                 </div>
               </div>
 
-              <Input label="Sinopse" value={data.sinopse} onChange={(e) => update("sinopse", e.target.value)} />
+              <div className="mt-3">
+                 <Input label="Sinopse" value={data.sinopse} onChange={(e) => update("sinopse", e.target.value)} />
+              </div>
 
-              <div className="row">
+              <div className="row g-3 mt-1">
                 <div className="col-md-4">
                   <Input type="number" label="Duração (min)" value={data.duracao} onChange={(e) => update("duracao", Number(e.target.value))} />
                 </div>
@@ -68,7 +72,7 @@ export default function FilmeForm() {
                     value={data.classificacao}
                     onChange={(e) => update("classificacao", e.target.value)}
                     options={[
-                        { value: "L", label: "Livre (L)" },
+                        { value: "L", label: "Livre" },
                         { value: "10", label: "10 anos" },
                         { value: "12", label: "12 anos" },
                         { value: "14", label: "14 anos" },
@@ -77,22 +81,25 @@ export default function FilmeForm() {
                     ]}
                   />
                 </div>
+                 <div className="col-md-4">
+                    <Input label="Elenco Principal" value={data.elenco} onChange={(e) => update("elenco", e.target.value)} />
+                 </div>
               </div>
 
-              <Input label="Elenco Principal" value={data.elenco} onChange={(e) => update("elenco", e.target.value)} />
-
-              <div className="row">
+              <div className="row g-3 mt-1">
                 <div className="col-md-6">
-                  <Input type="date" label="Início Exibição" value={data.dataInicialExibicao} onChange={(e) => update("dataInicialExibicao", e.target.value)} />
+                  <Input type="date" label="Estreia (Início)" value={data.dataInicialExibicao} onChange={(e) => update("dataInicialExibicao", e.target.value)} />
                 </div>
                 <div className="col-md-6">
-                  <Input type="date" label="Fim Exibição" value={data.dataFinalExibicao} onChange={(e) => update("dataFinalExibicao", e.target.value)} />
+                  <Input type="date" label="Saída de Cartaz (Fim)" value={data.dataFinalExibicao} onChange={(e) => update("dataFinalExibicao", e.target.value)} />
                 </div>
               </div>
 
-              <div className="d-flex justify-content-end gap-2 mt-4">
-                <Button type="button" variant="light" onClick={() => navigate("/filmes")}>Cancelar</Button>
-                <Button type="submit" variant="primary"><i className="bi bi-save me-2"></i>Salvar Filme</Button>
+              <hr className="border-secondary my-4" />
+
+              <div className="d-flex justify-content-end gap-2">
+                <Button type="button" variant="outline-secondary" onClick={() => navigate("/filmes")}>Cancelar</Button>
+                <Button type="submit" variant="primary" size="lg"><i className="bi bi-check-lg me-2"></i>Salvar Filme</Button>
               </div>
             </form>
           </div>

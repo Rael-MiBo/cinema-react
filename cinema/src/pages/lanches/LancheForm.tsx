@@ -31,27 +31,35 @@ export default function LancheForm() {
   return (
     <div className="row justify-content-center">
       <div className="col-md-6">
-        <div className="card shadow border-0">
-          <div className="card-header bg-warning text-dark py-3">
-            <h4 className="mb-0 fw-bold"><i className="bi bi-cup-straw me-2"></i>{id ? "Editar Item" : "Novo Item"}</h4>
-          </div>
+        <div className="card shadow-lg">
           <div className="card-body p-4">
-            <form onSubmit={submit}>
-              <Input label="Nome do Produto" value={data.nome} onChange={(e) => setData({ ...data, nome: e.target.value })} />
-              <Input label="Descrição" value={data.descricao} onChange={(e) => setData({ ...data, descricao: e.target.value })} />
+            
+            <div className="text-center mb-4">
+               <i className="bi bi-basket2-fill display-1 text-danger"></i>
+               <h3 className="mt-2 fw-bold">{id ? "Editar Item" : "Novo Item da Lanches"}</h3>
+            </div>
 
-              <div className="row">
+            <form onSubmit={submit}>
+              <div className="mb-3">
+                 <Input label="Nome do Produto" value={data.nome} onChange={(e) => setData({ ...data, nome: e.target.value })} placeholder="Ex: Combo Pipoca + Refri" />
+              </div>
+              
+              <div className="mb-3">
+                 <Input label="Descrição Curta" value={data.descricao} onChange={(e) => setData({ ...data, descricao: e.target.value })} />
+              </div>
+
+              <div className="row g-3">
                 <div className="col-6">
-                  <Input type="number" label="Preço Unitário (R$)" value={data.valorUnitario} onChange={(e) => setData({ ...data, valorUnitario: Number(e.target.value) })} />
+                  <Input type="number" label="Preço (R$)" value={data.valorUnitario} onChange={(e) => setData({ ...data, valorUnitario: Number(e.target.value) })} />
                 </div>
                 <div className="col-6">
-                  <Input type="number" label="Estoque (Unidades)" value={data.qtUnidade} onChange={(e) => setData({ ...data, qtUnidade: Number(e.target.value) })} />
+                  <Input type="number" label="Estoque Inicial" value={data.qtUnidade} onChange={(e) => setData({ ...data, qtUnidade: Number(e.target.value) })} />
                 </div>
               </div>
 
-              <div className="d-flex justify-content-end gap-2 mt-4">
-                <Button type="button" variant="light" onClick={() => navigate("/lanches")}>Cancelar</Button>
-                <Button type="submit" variant="warning"><i className="bi bi-save me-2"></i>Salvar Item</Button>
+              <div className="d-grid gap-2 mt-4">
+                <Button type="submit" variant="primary" size="lg">Salvar Produto</Button>
+                <Button type="button" variant="link" className="text-decoration-none text-muted" onClick={() => navigate("/lanches")}>Cancelar</Button>
               </div>
             </form>
           </div>

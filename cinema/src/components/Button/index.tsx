@@ -1,6 +1,6 @@
 import React from "react";
 
-export type Variant = "primary" | "secondary" | "danger" | "success" | "warning" | "light" | "dark" | "outline-primary" | "outline-secondary" | "outline-danger" | "outline-success" | "outline-warning" | "outline-light" | "outline-dark" | "outline-danger";
+export type Variant = "primary" | "secondary" | "danger" | "success" | "link" | "warning" | "light" | "dark" | "outline-primary" | "outline-secondary" | "outline-danger" | "outline-success" | "outline-warning" | "outline-light" | "outline-dark" | "outline-danger";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
