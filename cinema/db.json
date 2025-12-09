@@ -1,41 +1,7 @@
 {
-  "filmes": [
-    {
-      "id": "5adb",
-      "titulo": "teste",
-      "sinopse": "testestestestestes",
-      "classificacao": "18",
-      "duracao": 56,
-      "genero": "teste",
-      "elenco": "eu",
-      "dataInicialExibicao": "2025-12-01",
-      "dataFinalExibicao": "2025-12-31"
-    }
-  ],
-  "salas": [
-    {
-      "id": "8f2d",
-      "numero": 2,
-      "capacidade": 20
-    }
-  ],
-  "sessoes": [
-    {
-      "id": "d34b",
-      "filmeId": "5adb",
-      "salaId": "8f2d",
-      "horarioExibicao": "2025-12-17T15:27",
-      "valorIngresso": 234
-    }
-  ],
-  "lanches": [
-    {
-      "id": "960d",
-      "nome": "pipoca",
-      "descricao": "pippoca",
-      "valorUnitario": 12,
-      "qtUnidade": 12
-    }
-  ],
+  "filmes": [],
+  "salas": [],
+  "sessoes": [],
+  "lanches": [],
   "pedidos": []
 }
