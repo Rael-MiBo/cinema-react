@@ -53,7 +53,7 @@ export default function SessaoForm() {
           <div className="card-body p-5">
             
             <div className="text-center mb-4">
-               <i className="bi bi-calendar-event display-1 text-primary"></i>
+               <i className="bi bi-calendar-event display-1 text-danger"></i>
                <h3 className="mt-2 fw-bold">{id ? "Editar Sessão" : "Agendar Sessão"}</h3>
             </div>
 
