@@ -37,6 +37,21 @@ export default function FilmeForm() {
     }
   }
 
+  const generos = [
+    { value: "Ação", label: "Ação" },
+    { value: "Aventura", label: "Aventura" },
+    { value: "Comédia", label: "Comédia" },
+    { value: "Drama", label: "Drama" },
+    { value: "Ficção Científica", label: "Ficção Científica" },
+    { value: "Terror", label: "Terror" },
+    { value: "Romance", label: "Romance" },
+    { value: "Animação", label: "Animação" },
+    { value: "Suspense", label: "Suspense" },
+    { value: "Documentário", label: "Documentário" },
+    { value: "Musical", label: "Musical" },
+    { value: "Fantasia", label: "Fantasia" }
+  ];
+
   return (
     <div className="row justify-content-center">
       <div className="col-lg-8">
@@ -54,7 +69,15 @@ export default function FilmeForm() {
                   <Input label="Título Original" value={data.titulo} onChange={(e) => update("titulo", e.target.value)} />
                 </div>
                 <div className="col-md-4">
-                   <Input label="Gênero" value={data.genero} onChange={(e) => update("genero", e.target.value)} />
+                   <Select 
+                      label="Gênero Principal"
+                      value={data.genero}
+                      onChange={(e) => update("genero", e.target.value)}
+                      options={[
+                        { value: "", label: "Selecione..." },
+                        ...generos
+                      ]}
+                   />
                 </div>
               </div>
 
@@ -72,7 +95,8 @@ export default function FilmeForm() {
                     value={data.classificacao}
                     onChange={(e) => update("classificacao", e.target.value)}
                     options={[
-                        { value: "L", label: "Livre" },
+                        { value: "", label: "Selecione..." },
+                        { value: "L", label: "Livre (L)" },
                         { value: "10", label: "10 anos" },
                         { value: "12", label: "12 anos" },
                         { value: "14", label: "14 anos" },
